@@ -1,0 +1,76 @@
+/* Style for the main container */
+.batch-results-container {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  
+  /* Style for heading */
+  .batch-results-container h2 {
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+  /* Style for select dropdown */
+  .batch-select {
+    padding: 8px;
+    font-size: 16px;
+    margin-right: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  /* Style for search button */
+  .search-button {
+    padding: 8px 15px;
+    font-size: 16px;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .search-button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Style for error message */
+  .error-message {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
+  /* Style for the table */
+  .results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #f9f9f9;
+  }
+  
+  /* Style for table headers */
+  .results-table th {
+    background-color: #677cca;
+    color: white;
+    padding: 12px;
+  }
+  
+  /* Style for table rows */
+  .results-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+  
+  /* Alternating row colors */
+  .results-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  /* Hover effect for rows */
+  .results-table tr:hover {
+    background-color: #fdfafa;
+  }
+  
