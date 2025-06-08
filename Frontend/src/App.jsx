@@ -7,6 +7,7 @@ import GetDetails from "../src/component/GetDetails";
 import BatchResults from './component/BatchResults';
 import QuizTestPerformance from './component/QuizTestPerformance';
 import CompareWithTopper from './component/CompareWithTopper';
+import OverallAnalysis from './component/OverallAnalysis';
 const App = () => {
     return (
         <Router>
@@ -18,6 +19,7 @@ const App = () => {
                     <Route path="resultdashboard" element={<BatchResults/>} /> 
                     <Route path="quizanalysis" element={<QuizTestPerformance/>} /> 
                     <Route path="comparision" element={<CompareWithTopper/>} /> 
+                    <Route path="graphicalanalysis" element={<OverallAnalysis/>} /> 
                 </Route>
             </Routes>
         </Router>

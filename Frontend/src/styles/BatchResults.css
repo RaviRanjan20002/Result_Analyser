@@ -1,76 +1,224 @@
-/* Style for the main container */
 .batch-results-container {
-    text-align: center;
-    font-family: Arial, sans-serif;
-    padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 95%;
+  height:auto;
+  margin: 40px auto;
+  background-color: #ffffff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  box-sizing: border-box;
+  overflow-x: scroll;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.batch-results-container h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #34033c;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.selectclass {
+  width: 90%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s;
+}
+
+.selectclass:focus {
+  border-color: #007bff;
+  outline: none;
+}
+.inputclass {
+  appearance: auto; /* Allow native date picker */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 88%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s;
+}
+
+.inputclass:focus {
+  border-color: #007bff;
+  outline: none;
+}
+input[type="date"] {
+  appearance: auto;
+  -webkit-appearance: auto;
+  -moz-appearance: auto;
+}  
+.batch-button{
+  margin: 20px auto;
+  text-align: center;
+  color: #fff;
+  width: 150px;
+  height: 40px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-family: 'Lato', sans-serif;
+  font-weight: 500;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  color: #090909;
+  border: 1px solid#010101;
+  box-shadow: 0 0 5px #130a8e, 0 0 5px #092b9a inset;
+  z-index: 1;
+}
+
+.batch-button:after {
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 100%;
+  top: 0;
+  right: 0;
+  z-index: -1;
+  background: #0f1c89;
+  box-shadow:
+   0 0 20px  #1b1595;
+  transition: all 0.3s ease;
+}
+.batch-button:hover {
+  color: #6cbde9;
+}
+.batch-button:hover:after {
+  left: 0;
+  width: 100%;
+}
+.batch-button:active {
+  top: 2px;
+}
+
+.error-message {
+  text-align: center;
+  color: rgb(155, 6, 6);
+  margin-top: -20px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.results-table {
+  width: 100%;
+  margin: 0 auto;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 15px;
+}
+
+.results-table thead {
+  background-color: #f2f2f2;
+}
+
+.results-table th, 
+.results-table td {
+  border: 1px solid #ddd;
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.results-table th {
+  color: #333;
+  font-weight: 600;
+}
+.ptag{
+  color: #2d2d2b;
+  text-align: center;
+  font-weight: 600;
+}
+.results-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.results-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
   }
-  
-  /* Style for heading */
-  .batch-results-container h2 {
-    color: #333;
-    margin-bottom: 15px;
-  }
-  
-  /* Style for select dropdown */
-  .batch-select {
-    padding: 8px;
-    font-size: 16px;
-    margin-right: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-  
-  /* Style for search button */
-  .search-button {
-    padding: 8px 15px;
-    font-size: 16px;
-    color: white;
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  
-  .search-button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Style for error message */
-  .error-message {
-    color: red;
-    font-weight: bold;
-    margin-top: 10px;
-  }
-  
-  /* Style for the table */
-  .results-table {
+
+  .selectclass{
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background-color: #f9f9f9;
   }
-  
-  /* Style for table headers */
-  .results-table th {
-    background-color: #677cca;
-    color: white;
-    padding: 12px;
+  .inputclass{
+    width: 100%;
   }
-  
-  /* Style for table rows */
+  .batch-button {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .results-table {
+    font-size: 14px;
+    overflow-x: auto;
+    display: block;
+  }
+
+  .results-table table {
+    width: 100%;
+    min-width: 600px; /* allow horizontal scroll if needed */
+  }
+
+  .results-table th,
   .results-table td {
-    padding: 10px;
-    border: 1px solid #ddd;
+    padding: 8px 6px;
+    white-space: nowrap;
   }
-  
-  /* Alternating row colors */
-  .results-table tr:nth-child(even) {
-    background-color: #f2f2f2;
+
+  .batch-results-container {
+    padding: 16px;
+    height: auto;
   }
-  
-  /* Hover effect for rows */
-  .results-table tr:hover {
-    background-color: #fdfafa;
+  input[type="date"] {
+    appearance: auto;
+    -webkit-appearance: auto;
+    -moz-appearance: auto;
+  } 
+}
+@media (max-width: 480px) {
+  .batch-results-container h1 {
+    font-size: 22px;
   }
-  
+  .selectclass{
+    width:280px;
+  }
+  .inputclass{
+    width: 260px;
+  }
+  .batch-button {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+  input[type="date"] {
+    appearance: auto;
+    -webkit-appearance: auto;
+    -moz-appearance: auto;
+  }  
+}

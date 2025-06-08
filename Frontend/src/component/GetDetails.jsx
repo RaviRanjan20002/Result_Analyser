@@ -6,14 +6,15 @@ const GetDetails = () => {
   const [studentCode, setStudentCode] = useState("");
   const [results, setResults] = useState([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const fetchResults = async () => {
     if (!studentCode) {
       setError("Please enter the 5-digit student code.");
       return;
     }
-
     setError("");
+    setLoading(true);
     try {
       const response = await axios.get(
         `http://localhost:3001/api/resultbycode?studentCode=${studentCode}`
@@ -23,17 +24,19 @@ const GetDetails = () => {
       console.error(err);
       setResults([]);
       setError("No results found for this student code.");
+    }finally {
+      setLoading(false); // <-- Hide loader
     }
   };
 
   const isNeetBatch =
-    results.length > 0 && results[0]?.batch?.toLowerCase() === "madhav";
+  results.length > 0 &&
+  ["dron", "madhav", "nakul"].includes(results[0]?.batch?.toLowerCase());
   const subjectName = isNeetBatch ? "Biology" : "Mathematics";
 
   return (
     <div className="get-details-container">
-      <h2>Search Student Results by Code</h2>
-
+      <div className="box">Search Your Result By Enter Code</div>
       <input
         type="text"
         placeholder="Enter 5-digit Student Code"
@@ -42,12 +45,20 @@ const GetDetails = () => {
         className="input-field"
       />
 
-      <button onClick={fetchResults} className="search-button">
+      <button onClick={fetchResults} className="getbttn">
         Search
       </button>
 
       {error && <p className="error-message">{error}</p>}
-     {results.length > 0 && (
+
+         {/* SHOW "Searching..." WHEN LOADING */}
+         {loading && (
+        <p style={{ textAlign: "center", marginTop: "20px", fontWeight: "bold" }}>
+          Searching...
+        </p>
+      )}
+
+     {!loading && results.length > 0 && (
         <div className="student-info">
           <h3>Student Information</h3>
           <p>Name: {results[0].name}</p>
@@ -73,6 +84,7 @@ const GetDetails = () => {
               <th>{subjectName} (Incorrect Marks)</th>
               <th>{subjectName} (Total Marks)</th>
               <th>Total Marks</th>
+              <th>Rank</th>
             </tr>
           </thead>
           <tbody>
@@ -105,6 +117,8 @@ const GetDetails = () => {
                 )}
 
                 <td>{result.totalMarks ?? "-"}</td>
+                <td>{result.rank}</td>
+
               </tr>
             ))}
           </tbody>
