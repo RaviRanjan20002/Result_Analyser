@@ -54,74 +54,204 @@ app.get("/", (req, res) => {
   res.send("Server is running!");
 });
 
-// ✅ API to Add Student Test Details
+// // ✅ API to Add Student Test Details
+// app.post("/api/results", async (req, res) => {
+//   try {
+//     const { name, fatherName, testType, subjectMarks } = req.body;
+//     let totalMarks = 0;
+
+//     // Calculate total marks
+//     if (testType === "neet") {
+//       totalMarks = subjectMarks.physics.totalMark + subjectMarks.chemistry.totalMark + subjectMarks.biology.totalMark;
+//     } else {
+//       totalMarks = subjectMarks.physics.totalMark + subjectMarks.chemistry.totalMark + subjectMarks.mathematics.totalMark;
+//     }
+
+//     // ✅ Check if student exists
+//     const existing = await Result.findOne({ name, fatherName });
+//     let studentCode = existing?.studentCode;
+
+//     // ✅ Generate 5-digit code if not already assigned
+//     if (!studentCode) {
+//       studentCode = Math.floor(10000 + Math.random() * 90000).toString();
+//     }
+
+//     // Save result
+//     const result = new Result({
+//       ...req.body,
+//       subjectMarks: testType === "neet"
+//         ? {
+//             physics: subjectMarks.physics,
+//             chemistry: subjectMarks.chemistry,
+//             biology: subjectMarks.biology,
+//           }
+//         : {
+//             physics: subjectMarks.physics,
+//             chemistry: subjectMarks.chemistry,
+//             mathematics: subjectMarks.mathematics,
+//           },
+//       totalMarks,
+//       studentCode, // 🔐 assign code
+//     });
+
+//     await result.save();
+//     res.status(201).json({ message: "Result saved successfully!", studentCode });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
 app.post("/api/results", async (req, res) => {
   try {
-    const { name, fatherName, testType, subjectMarks } = req.body;
+    const { name, fatherName, testType, testDate, subjectMarks, batch } = req.body;
+
+    // Convert to YYYY-MM-DD format string
+    // const testDateFormatted = new Date(testDate).toISOString().split("T")[0];
+    const testDateFormatted = testDate; // already in correct format
+
     let totalMarks = 0;
 
     // Calculate total marks
-    if (testType === "neet") {
-      totalMarks = subjectMarks.physics.totalMark + subjectMarks.chemistry.totalMark + subjectMarks.biology.totalMark;
+    if (["dron", "madhav", "nakul"].includes(batch.toLowerCase())) {
+      totalMarks =
+        subjectMarks.physics.totalMark +
+        subjectMarks.chemistry.totalMark +
+        subjectMarks.biology.totalMark;
     } else {
-      totalMarks = subjectMarks.physics.totalMark + subjectMarks.chemistry.totalMark + subjectMarks.mathematics.totalMark;
+      totalMarks =
+        subjectMarks.physics.totalMark +
+        subjectMarks.chemistry.totalMark +
+        subjectMarks.mathematics.totalMark;
     }
 
-    // ✅ Check if student exists
+    // Check for duplicate entry
+    const duplicate = await Result.findOne({
+      name,
+      fatherName,
+      testType,
+      testDate: testDateFormatted,
+    });
+
+    if (duplicate) {
+      return res.status(409).json({ message: "⚠️ Result already exists for this test." });
+    }
+
+    // Reuse studentCode if exists
     const existing = await Result.findOne({ name, fatherName });
     let studentCode = existing?.studentCode;
 
-    // ✅ Generate 5-digit code if not already assigned
     if (!studentCode) {
       studentCode = Math.floor(10000 + Math.random() * 90000).toString();
     }
 
-    // Save result
     const result = new Result({
-      ...req.body,
-      subjectMarks: testType === "neet"
-        ? {
-            physics: subjectMarks.physics,
-            chemistry: subjectMarks.chemistry,
-            biology: subjectMarks.biology,
-          }
-        : {
-            physics: subjectMarks.physics,
-            chemistry: subjectMarks.chemistry,
-            mathematics: subjectMarks.mathematics,
-          },
+      name,
+      fatherName,
+      batch,
+      testType,
+      testDate: testDateFormatted, // ✅ Properly formatted date
+      subjectMarks:
+      ["dron", "madhav", "nakul"].includes(batch.toLowerCase())
+          ? {
+              physics: subjectMarks.physics,
+              chemistry: subjectMarks.chemistry,
+              biology: subjectMarks.biology,
+            }
+          : {
+              physics: subjectMarks.physics,
+              chemistry: subjectMarks.chemistry,
+              mathematics: subjectMarks.mathematics,
+            },
       totalMarks,
-      studentCode, // 🔐 assign code
+      studentCode,
     });
 
     await result.save();
-    res.status(201).json({ message: "Result saved successfully!", studentCode });
+    res.status(201).json({ message: "✅ Result saved successfully!", studentCode });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
+
+// app.get("/api/resultbycode", async (req, res) => {
+//   try {
+//     const { studentCode } = req.query;
+
+//     if (!studentCode || studentCode.length !== 5) {
+//       return res.status(400).json({ message: "Please provide a valid 5-digit student code." });
+//     }
+
+//     const results = await Result.find({ studentCode }).sort({ testDate: -1 });
+
+//     if (results.length === 0) {
+//       return res.status(404).json({ message: "No results found for this code." });
+//     }
+
+//     res.status(200).json(results);
+//   } catch (err) {
+//     console.error("Error fetching result by code:", err);
+//     res.status(500).json({ error: "Internal server error." });
+//   }
+// });
+
+
+
+
 
 app.get("/api/resultbycode", async (req, res) => {
   try {
     const { studentCode } = req.query;
 
     if (!studentCode || studentCode.length !== 5) {
-      return res.status(400).json({ message: "Please provide a valid 5-digit student code." });
+      return res
+        .status(400)
+        .json({ message: "Please provide a valid 5-digit student code." });
     }
 
-    const results = await Result.find({ studentCode }).sort({ testDate: -1 });
+    const studentResults = await Result.find({ studentCode }).sort({ testDate: -1 });
 
-    if (results.length === 0) {
+    if (studentResults.length === 0) {
       return res.status(404).json({ message: "No results found for this code." });
     }
 
-    res.status(200).json(results);
+    const resultsWithRank = await Promise.all(
+      studentResults.map(async (studentResult) => {
+        const { batch, testType, testDate } = studentResult;
+
+        // Fetch all results for same test
+        const sameTestResults = await Result.find({
+          batch,
+          testType,
+          testDate,
+        });
+
+        // Sort them by totalMarks descending
+        sameTestResults.sort((a, b) => (b.totalMarks || 0) - (a.totalMarks || 0));
+
+        // Assign ranks
+        const rankMap = {};
+        let rankCounter = 1;
+        sameTestResults.forEach((r) => {
+          if (!(r.totalMarks in rankMap)) {
+            rankMap[r.totalMarks] = rankCounter++;
+          }
+        });
+
+        const rank = rankMap[studentResult.totalMarks] || "-";
+
+        return {
+          ...studentResult.toObject(),
+          rank,
+        };
+      })
+    );
+
+    res.status(200).json(resultsWithRank);
   } catch (err) {
     console.error("Error fetching result by code:", err);
     res.status(500).json({ error: "Internal server error." });
   }
 });
-
 
 // ✅ API to Fetch Test Details by Student Name
 app.get("/api/results/:name", async (req, res) => {
@@ -256,7 +386,7 @@ app.get("/api/results/batch/:batch", async (req, res) => {
     if (testType) query.testType = testType;
     if (testDate) query.testDate = testDate;
 
-    const results = await Result.find(query).sort({ testDate: -1 });
+    const results = await Result.find(query).sort({ totalMarks: -1 }); // Sort by totalMarks descending
 
     if (results.length === 0) {
       return res.status(404).json({ message: "This test type is not conducted on this date. Enter correct date." });
@@ -268,65 +398,163 @@ app.get("/api/results/batch/:batch", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+
+
+
+
 // GET quiz performance results with filtering
+
 app.get("/api/quiz-performance/:batch", async (req, res) => {
   try {
     const { batch } = req.params;
-    const { filter, maxMarks } = req.query;
-
-    if (!maxMarks) {
-      return res.status(400).json({ message: "Max marks is required." });
+    const { filter, max1, max2, max3 } = req.query;
+ console.log(`Fetching quiz performance for batch: ${batch}, Filter: ${filter}, Max1: ${max1}, Max2: ${max2}, Max3: ${max3}`);
+    if (filter === "below75Last3" && (!max1 || !max2 || !max3)) {
+      return res.status(400).json({ message: "All three max marks are required." });
     }
 
-    const max = parseFloat(maxMarks);
-    const threshold = 0.75 * max;
+    const maxVal1 = parseFloat(max1);
+    const maxVal2 = parseFloat(max2);
+    const maxVal3 = parseFloat(max3);
+
+    const threshold1 = 0.75 * maxVal1;
+    const threshold2 = 0.75 * maxVal2;
+    const threshold3 = 0.75 * maxVal3;
 
     const results = await Result.find({ batch, testType: "quiztest" }).sort({ testDate: -1 });
+  console.log("Results:", results); // Debug: Log fetched results
+    if (!results.length) {
+      return res.status(200).json([]);
+    }
 
-    let filteredResults = results;
+    const studentMap = new Map();
 
-    if (filter === "above75") {
-      filteredResults = results.filter(result => result.totalMarks > threshold);
-    } else if (filter === "below75") {
-      filteredResults = results.filter(result => result.totalMarks <= threshold);
-    } else if (filter === "above75Last3" || filter === "below75Last3") {
-      const studentMap = new Map();
+    results.forEach(result => {
+      const key = `${result.name}-${result.fatherName}`;
+      if (!studentMap.has(key)) {
+        studentMap.set(key, []);
+      }
+      studentMap.get(key).push(result);
+    });
 
-      results.forEach(result => {
-        if (!studentMap.has(result.name)) {
-          studentMap.set(result.name, []);
-        }
-        studentMap.get(result.name).push(result);
-      });
+    const filtered = [];
 
-      const filtered = [];
+    for (const [key, studentResults] of studentMap.entries()) {
+      const last3 = studentResults.slice(0, 3);
 
-      for (const [name, studentResults] of studentMap.entries()) {
-        const last3 = studentResults.slice(0, 3);
+      if (last3.length === 3) {
+        last3.sort((a, b) => new Date(a.testDate) - new Date(b.testDate));
 
-        if (last3.length === 3) {
-          const allAbove = last3.every(r => r.totalMarks > threshold);
-          const allBelow = last3.every(r => r.totalMarks <= threshold);
+        const [r1, r2, r3] = last3;
 
-          if (filter === "above75Last3" && allAbove) {
-            filtered.push(last3[0]);
-          }
+        if (filter === "below75Last3") {
+          const allBelow =
+            r1.totalMarks <= threshold1 &&
+            r2.totalMarks <= threshold2 &&
+            r3.totalMarks <= threshold3;
 
-          if (filter === "below75Last3" && allBelow) {
-            filtered.push(last3[0]);
+          const strictlyDecreasing =
+            r1.totalMarks > r2.totalMarks &&
+            r2.totalMarks > r3.totalMarks;
+
+          console.log("Student:", key);
+          console.log("Marks:", r1.totalMarks, r2.totalMarks, r3.totalMarks);
+          console.log("Thresholds:", threshold1, threshold2, threshold3);
+          console.log("allBelow?", allBelow, "strictlyDecreasing?", strictlyDecreasing);
+
+          if (allBelow && strictlyDecreasing) {
+            filtered.push(...last3);
+            console.log(filtered); // Debug: Log filtered results
           }
         }
       }
-
-      filteredResults = filtered;
     }
 
-    res.status(200).json(filteredResults);
+    return res.status(200).json(filtered);
   } catch (err) {
     console.error("Error in quiz performance:", err);
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error" });
   }
 });
+
+
+
+
+//Relative - (studentmarks/highestmarks)*100
+app.get("/api/student-performance", async (req, res) => {
+  const { studentCode, batch, testType } = req.query;
+
+  try {
+    const studentTests = await Result.find({
+      studentCode,
+      batch,
+      testType,
+    });
+
+    const testDates = studentTests.map(test => test.testDate); // No need to parse
+
+    const results = await Promise.all(
+      testDates.map(async (dateStr) => {
+        const studentResult = studentTests.find(test => test.testDate === dateStr);
+        if (!studentResult) return null;
+
+        // Match results by exact testDate string
+        const allResultsOnDate = await Result.find({
+          batch,
+          testType,
+          testDate: dateStr, // use string as-is
+        });
+
+        if (!allResultsOnDate.length) return null;
+
+        // Ensure you're calculating highest marks correctly here.
+        const highest = {
+          physics: Math.max(...allResultsOnDate.map(r => r?.subjectMarks?.physics?.totalMark ?? 0)),
+          chemistry: Math.max(...allResultsOnDate.map(r => r?.subjectMarks?.chemistry?.totalMark ?? 0)),
+          biology: Math.max(...allResultsOnDate.map(r => r?.subjectMarks?.biology?.totalMark ?? 0)),
+          mathematics: Math.max(...allResultsOnDate.map(r => r?.subjectMarks?.mathematics?.totalMark ?? 0)),
+          total: Math.max(...allResultsOnDate.map(r => r?.totalMarks ?? 0)),
+        };
+
+  //  console.log("Highest Marks:", highest);  
+
+        // Calculate percentages for each subject based on highest marks
+        const physicsPercentage = highest.physics ? (studentResult.subjectMarks?.physics?.totalMark || 0) / highest.physics * 100 : 0;
+        const chemistryPercentage = highest.chemistry ? (studentResult.subjectMarks?.chemistry?.totalMark || 0) / highest.chemistry * 100 : 0;
+        const thirdSubjectPercentage = highest.biology || highest.mathematics
+          ? (highest.biology ? (studentResult.subjectMarks?.biology?.totalMark || 0) / highest.biology * 100 : 0) || (highest.mathematics ? (studentResult.subjectMarks?.mathematics?.totalMark || 0) / highest.mathematics * 100 : 0)
+          : 0;
+        const totalPercentage = highest.total ? (studentResult.totalMarks || 0) / highest.total * 100 : 0;
+
+        // console.log({
+        //   testDate: dateStr,
+        //   physicsPercentage,
+        //   chemistryPercentage,
+        //   thirdSubjectPercentage,
+        //   totalPercentage,
+        // }); 
+        // Debug: Log data being sent to frontend
+
+        return {
+          testDate: dateStr,
+          physics: physicsPercentage.toFixed(2),
+          chemistry: chemistryPercentage.toFixed(2),
+          third: thirdSubjectPercentage.toFixed(2),
+          total: totalPercentage.toFixed(2),
+        };
+      })
+    );
+
+    res.json(results.filter(Boolean).sort((a, b) => new Date(a.testDate) - new Date(b.testDate)));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching performance data." });
+  }
+});
+
+
+
 
 
 // ✅ API to Fetch Unique Students (For Auto-Fill Feature)
@@ -384,44 +612,83 @@ app.get("/api/compare-with-topper", async (req, res) => {
 
 
 
-// Add this route in your Express app
-// app.get("/api/compare", async (req, res) => {
-//   try {
-//     const { name, batch, testType } = req.query;
+app.get("/api/student-performance", async (req, res) => {
+  const { studentCode, batch, testType } = req.query;
 
-//     if (!name || !batch || !testType) {
-//       return res.status(400).json({ message: "Please provide name, batch, and testType." });
-//     }
+  try {
+    const studentTests = await Result.find({
+      studentCode,
+      batch,
+      testType,
+    });
 
-//     const allResults = await Result.find({ batch, testType });
+    // Convert dates to 'YYYY-MM-DD' string format
+    const testDates = studentTests.map(test => new Date(test.testDate).toISOString().split("T")[0]);
 
-//     const studentResults = allResults.filter(r => r.name === name);
-//     if (studentResults.length === 0) {
-//       return res.status(404).json({ message: "No results found for the student." });
-//     }
+    const results = await Promise.all(
+      testDates.map(async (dateStr) => {
+        const [studentResult] = studentTests.filter(test =>
+          new Date(test.testDate).toISOString().split("T")[0] === dateStr
+        );
 
-//     const testDates = [...new Set(allResults.map(r => r.testDate))].sort();
+        if (!studentResult) {
+          return null;
+        }
 
-//     const rankedData = testDates.map(date => {
-//       const resultsOnDate = allResults.filter(r => r.testDate === date);
-//       const sorted = [...resultsOnDate].sort((a, b) => b.totalMarks - a.totalMarks);
-//       const topper = sorted[0];
-//       const student = sorted.find(r => r.name === name);
+        const allResultsOnDate = await Result.find({
+          batch,
+          testType,
+          testDate: new Date(dateStr), // safe conversion
+        });
 
-//       return {
-//         testDate: date,
-//         topper,
-//         student,
-//         topperRank: 1,
-//         studentRank: student ? sorted.findIndex(r => r.name === student.name) + 1 : null
-//       };
-//     });
+        const highest = {
+          physics: Math.max(...allResultsOnDate.map(r => r?.subjectMarks?.physics?.totalMark || 0)),
+          chemistry: Math.max(...allResultsOnDate.map(r => r?.subjectMarks?.chemistry?.totalMark || 0)),
+          biology: Math.max(...allResultsOnDate.map(r => r?.subjectMarks?.biology?.totalMark || 0)),
+          mathematics: Math.max(...allResultsOnDate.map(r => r?.subjectMarks?.mathematics?.totalMark || 0)),
+          total: Math.max(...allResultsOnDate.map(r => r?.totalMarks || 0)),
+        };
+          // Debug: Log data being sent to frontend
+        console.log("Highest Marks:", highest);
+        const isNeet = ["dron", "madhav", "nakul"].includes(batch.toLowerCase());
 
-//     res.status(200).json(rankedData);
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
+        // Calculate percentages with safety checks
+        const physicsPercentage = highest.physics ? (studentResult.subjectMarks?.physics?.totalMark || 0) / highest.physics * 100 : 0;
+        const chemistryPercentage = highest.chemistry ? (studentResult.subjectMarks?.chemistry?.totalMark || 0) / highest.chemistry * 100 : 0;
+        const thirdSubjectPercentage = isNeet
+          ? (highest.biology ? (studentResult.subjectMarks?.biology?.totalMark || 0) / highest.biology * 100 : 0)
+          : (highest.mathematics ? (studentResult.subjectMarks?.mathematics?.totalMark || 0) / highest.mathematics * 100 : 0);
+        const totalPercentage = highest.total ? (studentResult.totalMarks || 0) / highest.total * 100 : 0;
+
+        // Debug: Log data being sent to frontend
+        console.log({
+          testDate: dateStr,
+          physicsPercentage,
+          chemistryPercentage,
+          thirdSubjectPercentage,
+          totalPercentage,
+        });
+
+        return {
+          testDate: dateStr,
+          physics: physicsPercentage.toFixed(2),
+          chemistry: chemistryPercentage.toFixed(2),
+          third: thirdSubjectPercentage.toFixed(2),
+          total: totalPercentage.toFixed(2),
+        };
+      })
+    );
+
+    res.json(results.filter(Boolean).sort((a, b) => new Date(a.testDate) - new Date(b.testDate)));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching performance data." });
+  }
+});
+
+
+
+
 
 // ✅ API to Fetch Student Details by Name
 app.get("/api/students/:name", async (req, res) => {
