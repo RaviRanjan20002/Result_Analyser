@@ -693,11 +693,13 @@ app.get("/api/student-performance", async (req, res) => {
 // ✅ API to Fetch Student Details by Name
 app.get("/api/students/:name", async (req, res) => {
   try {
-    const student = await Result.findOne({ name: req.params.name }).select("fatherName batch -_id");
-    if (!student) {
+    const students = await Result.find({ name: req.params.name }).select("fatherName batch -_id");
+
+    if (!students.length) {
       return res.status(404).json({ message: "Student not found" });
     }
-    res.status(200).json(student);
+
+    res.status(200).json({ students }); // always send as array
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
