@@ -280,21 +280,95 @@ const SetDetails = () => {
     totalMarks: 0,
   });
 
-  const fetchStudentDetails = async (name) => {
-    if (name.length < 3) return;
-    try {
-      const response = await axios.get(
-        `https://result-analyserr.onrender.com/api/students/${name}`
-      );
+const [fatherOptions, setFatherOptions] = useState([]);
+const [matchedStudents, setMatchedStudents] = useState([]);
+
+
+  // const fetchStudentDetails = async (name) => {
+  //   if (name.length < 3) return;
+  //   try {
+  //     const response = await axios.get(
+  //       `https://result-analyserr.onrender.com/api/students/${name}`
+  //     );
+  //     setFormData((prevData) => ({
+  //       ...prevData,
+  //       fatherName: response.data.fatherName,
+  //       batch: response.data.batch,
+  //     }));
+  //   } catch (error) {
+  //     console.log("Student not found, allowing new entry.");
+  //   }
+  // };
+
+// const fetchStudentDetails = async (name) => {
+//   if (name.length < 3) return;
+//   try {
+//     const response = await axios.get(
+//       `http://localhost:3001/api/students/${name}`
+//     );
+
+//     const fathers = response.data.fatherNames || [];
+
+//     if (fathers.length === 1) {
+//       setFormData((prevData) => ({
+//         ...prevData,
+//         fatherName: fathers[0],
+//       }));
+//       setFatherOptions([]);
+//     } else if (fathers.length > 1) {
+//       setFatherOptions(fathers);
+//       setFormData((prevData) => ({
+//         ...prevData,
+//         fatherName: "",
+//       }));
+//     } else {
+//       setFatherOptions([]);
+//     }
+//   } catch (error) {
+//     console.log("Student not found, allowing manual entry.");
+//     setFatherOptions([]);
+//   }
+// };
+
+const fetchStudentDetails = async (name) => {
+  if (name.length < 3) return;
+
+  try {
+    const response = await axios.get(
+      `https://result-analyserr.onrender.com/api/students/${name}`
+    );
+
+    const students = response.data.students || [];
+
+    if (students.length === 1) {
+      // Single student, autofill both fatherName and batch
       setFormData((prevData) => ({
         ...prevData,
-        fatherName: response.data.fatherName,
-        batch: response.data.batch,
+        fatherName: students[0].fatherName,
+        batch: students[0].batch,
       }));
-    } catch (error) {
-      console.log("Student not found, allowing new entry.");
+      setFatherOptions([]);
+    } else if (students.length > 1) {
+      // Multiple matches — show dropdown for fatherName
+      const uniqueFathers = [...new Set(students.map((s) => s.fatherName))];
+      setFatherOptions(uniqueFathers);
+      setMatchedStudents(students);
+      setFormData((prevData) => ({
+        ...prevData,
+        fatherName: "", // clear until selection
+      }));
+    } else {
+      // No match
+      setFatherOptions([]);
+      setMatchedStudents([]);
     }
-  };
+  } catch (error) {
+    console.log("Student not found, allowing manual entry.");
+    setFatherOptions([]);
+    setMatchedStudents([]);
+  }
+};
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -339,7 +413,7 @@ const SetDetails = () => {
     };
 
     try {
-      await axios.post("http://localhost:3001/api/results", payload);
+      await axios.post("https://result-analyserr.onrender.com/api/results", payload);
       alert("✅ Result Saved Successfully!");
 
       // Proper state reset
@@ -408,7 +482,7 @@ const SetDetails = () => {
           required
         />
 
-        <input
+        {/* <input
           type="text"
           name="fatherName"
           placeholder="Father's Name"
@@ -416,7 +490,71 @@ const SetDetails = () => {
           value={formData.fatherName}
           onChange={handleChange}
           required
-        />
+        /> */}
+{/* 
+{fatherOptions.length > 1 ? (
+  <select
+    name="fatherName"
+    className="selectcl"
+    value={formData.fatherName}
+    onChange={handleChange}
+    required
+  >
+    <option value="">Select Father's Name</option>
+    {fatherOptions.map((father, idx) => (
+      <option key={idx} value={father}>
+        {father}
+      </option>
+    ))}
+  </select>
+) : (
+  <input
+    type="text"
+    name="fatherName"
+    placeholder="Father's Name"
+    className="inputcl"
+    value={formData.fatherName}
+    onChange={handleChange}
+    required
+  />
+)} */}
+{fatherOptions.length > 0 ? (
+  <select
+    name="fatherName"
+    className="inputcl"
+    value={formData.fatherName}
+    onChange={(e) => {
+      const selectedFather = e.target.value;
+      const matched = matchedStudents.find(
+        (s) => s.fatherName === selectedFather
+      );
+      setFormData((prevData) => ({
+        ...prevData,
+        fatherName: selectedFather,
+        batch: matched?.batch || prevData.batch,
+      }));
+    }}
+    required
+  >
+    <option value="">Select Father</option>
+    {fatherOptions.map((father, idx) => (
+      <option key={idx} value={father}>
+        {father}
+      </option>
+    ))}
+  </select>
+) : (
+  <input
+    type="text"
+    name="fatherName"
+    placeholder="Father's Name"
+    className="inputcl"
+    value={formData.fatherName}
+    onChange={handleChange}
+    required
+  />
+)}
+
 
         <select className="selectcl" name="batch" onChange={handleChange} value={formData.batch}>
           <option value="Arjun">Arjun</option>

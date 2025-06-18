@@ -691,17 +691,50 @@ app.get("/api/student-performance", async (req, res) => {
 
 
 // ✅ API to Fetch Student Details by Name
+// app.get("/api/students/:name", async (req, res) => {
+//   try {
+//     const student = await Result.findOne({ name: req.params.name }).select("fatherName batch -_id");
+//     if (!student) {
+//       return res.status(404).json({ message: "Student not found" });
+//     }
+//     res.status(200).json(student);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
+// GET /api/students/:name
+// GET /api/students/:name
+// app.get("/api/students/:name", async (req, res) => {
+//   try {
+//     const { name } = req.params;
+//     const students = await Result.find({ name }).select("fatherName -_id");
+
+//     if (!students.length) {
+//       return res.status(404).json({ message: "Student not found" });
+//     }
+
+//     const fatherNames = [...new Set(students.map(s => s.fatherName))]; // Remove duplicates
+//     res.status(200).json({ fatherNames });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+// GET /api/students/:name
 app.get("/api/students/:name", async (req, res) => {
   try {
-    const student = await Result.findOne({ name: req.params.name }).select("fatherName batch -_id");
-    if (!student) {
+    const students = await Result.find({ name: req.params.name }).select("fatherName batch -_id");
+
+    if (!students.length) {
       return res.status(404).json({ message: "Student not found" });
     }
-    res.status(200).json(student);
+
+    res.status(200).json({ students }); // always send as array
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 
 

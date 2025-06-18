@@ -17,7 +17,7 @@ const GetDetails = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:3001/api/resultbycode?studentCode=${studentCode}`
+        `https://result-analyserr.onrender.com/api/resultbycode?studentCode=${studentCode}`
       );
       setResults(response.data);
     } catch (err) {
