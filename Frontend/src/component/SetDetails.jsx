@@ -1,4 +1,3 @@
-
 // import React, { useState,useRef } from "react";
 // import axios from "axios";
 // import "../styles/SetDetails.css"; // Assuming you have a CSS file for styling
@@ -23,7 +22,7 @@
 //     subjectMarks: {
 //       physics: { correctMark: 0, incorrectMark: 0, totalMark: 0 },
 //       chemistry: { correctMark: 0, incorrectMark: 0, totalMark: 0 },
-//       biology: { correctMark: 0, incorrectMark: 0, totalMark: 0 }, 
+//       biology: { correctMark: 0, incorrectMark: 0, totalMark: 0 },
 //       mathematics: { correctMark: 0, incorrectMark: 0, totalMark: 0 },
 //     },
 //     totalMarks: 0,
@@ -280,9 +279,8 @@ const SetDetails = () => {
     totalMarks: 0,
   });
 
-const [fatherOptions, setFatherOptions] = useState([]);
-const [matchedStudents, setMatchedStudents] = useState([]);
-
+  const [fatherOptions, setFatherOptions] = useState([]);
+  const [matchedStudents, setMatchedStudents] = useState([]);
 
   // const fetchStudentDetails = async (name) => {
   //   if (name.length < 3) return;
@@ -300,75 +298,74 @@ const [matchedStudents, setMatchedStudents] = useState([]);
   //   }
   // };
 
-// const fetchStudentDetails = async (name) => {
-//   if (name.length < 3) return;
-//   try {
-//     const response = await axios.get(
-//       `http://localhost:3001/api/students/${name}`
-//     );
+  // const fetchStudentDetails = async (name) => {
+  //   if (name.length < 3) return;
+  //   try {
+  //     const response = await axios.get(
+  //       `http://localhost:3001/api/students/${name}`
+  //     );
 
-//     const fathers = response.data.fatherNames || [];
+  //     const fathers = response.data.fatherNames || [];
 
-//     if (fathers.length === 1) {
-//       setFormData((prevData) => ({
-//         ...prevData,
-//         fatherName: fathers[0],
-//       }));
-//       setFatherOptions([]);
-//     } else if (fathers.length > 1) {
-//       setFatherOptions(fathers);
-//       setFormData((prevData) => ({
-//         ...prevData,
-//         fatherName: "",
-//       }));
-//     } else {
-//       setFatherOptions([]);
-//     }
-//   } catch (error) {
-//     console.log("Student not found, allowing manual entry.");
-//     setFatherOptions([]);
-//   }
-// };
+  //     if (fathers.length === 1) {
+  //       setFormData((prevData) => ({
+  //         ...prevData,
+  //         fatherName: fathers[0],
+  //       }));
+  //       setFatherOptions([]);
+  //     } else if (fathers.length > 1) {
+  //       setFatherOptions(fathers);
+  //       setFormData((prevData) => ({
+  //         ...prevData,
+  //         fatherName: "",
+  //       }));
+  //     } else {
+  //       setFatherOptions([]);
+  //     }
+  //   } catch (error) {
+  //     console.log("Student not found, allowing manual entry.");
+  //     setFatherOptions([]);
+  //   }
+  // };
 
-const fetchStudentDetails = async (name) => {
-  if (name.length < 3) return;
+  const fetchStudentDetails = async (name) => {
+    if (name.length < 3) return;
 
-  try {
-    const response = await axios.get(
-      `https://result-analyserr.onrender.com/api/students/${name}`
-    );
+    try {
+      const response = await axios.get(
+        `https://result-analyserr.onrender.com/api/students/${name}`
+      );
 
-    const students = response.data.students || [];
+      const students = response.data.students || [];
 
-    if (students.length === 1) {
-      // Single student, autofill both fatherName and batch
-      setFormData((prevData) => ({
-        ...prevData,
-        fatherName: students[0].fatherName,
-        batch: students[0].batch,
-      }));
-      setFatherOptions([]);
-    } else if (students.length > 1) {
-      // Multiple matches — show dropdown for fatherName
-      const uniqueFathers = [...new Set(students.map((s) => s.fatherName))];
-      setFatherOptions(uniqueFathers);
-      setMatchedStudents(students);
-      setFormData((prevData) => ({
-        ...prevData,
-        fatherName: "", // clear until selection
-      }));
-    } else {
-      // No match
+      if (students.length === 1) {
+        // Single student, autofill both fatherName and batch
+        setFormData((prevData) => ({
+          ...prevData,
+          fatherName: students[0].fatherName,
+          batch: students[0].batch,
+        }));
+        setFatherOptions([]);
+      } else if (students.length > 1) {
+        // Multiple matches — show dropdown for fatherName
+        const uniqueFathers = [...new Set(students.map((s) => s.fatherName))];
+        setFatherOptions(uniqueFathers);
+        setMatchedStudents(students);
+        setFormData((prevData) => ({
+          ...prevData,
+          fatherName: "", // clear until selection
+        }));
+      } else {
+        // No match
+        setFatherOptions([]);
+        setMatchedStudents([]);
+      }
+    } catch (error) {
+      console.log("Student not found, allowing manual entry.");
       setFatherOptions([]);
       setMatchedStudents([]);
     }
-  } catch (error) {
-    console.log("Student not found, allowing manual entry.");
-    setFatherOptions([]);
-    setMatchedStudents([]);
-  }
-};
-
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -413,7 +410,10 @@ const fetchStudentDetails = async (name) => {
     };
 
     try {
-      await axios.post("https://result-analyserr.onrender.com/api/results", payload);
+      await axios.post(
+        "https://result-analyserr.onrender.com/api/results",
+        payload
+      );
       alert("✅ Result Saved Successfully!");
 
       // Proper state reset
@@ -433,7 +433,9 @@ const fetchStudentDetails = async (name) => {
       });
     } catch (err) {
       if (err.response?.status === 409) {
-        alert("⚠️ Result already exists for this student, test type, and date.");
+        alert(
+          "⚠️ Result already exists for this student, test type, and date."
+        );
       } else {
         console.error(err);
         alert("❌ Something went wrong while saving.");
@@ -491,7 +493,7 @@ const fetchStudentDetails = async (name) => {
           onChange={handleChange}
           required
         /> */}
-{/* 
+        {/* 
 {fatherOptions.length > 1 ? (
   <select
     name="fatherName"
@@ -518,45 +520,49 @@ const fetchStudentDetails = async (name) => {
     required
   />
 )} */}
-{fatherOptions.length > 0 ? (
-  <select
-    name="fatherName"
-    className="inputcl"
-    value={formData.fatherName}
-    onChange={(e) => {
-      const selectedFather = e.target.value;
-      const matched = matchedStudents.find(
-        (s) => s.fatherName === selectedFather
-      );
-      setFormData((prevData) => ({
-        ...prevData,
-        fatherName: selectedFather,
-        batch: matched?.batch || prevData.batch,
-      }));
-    }}
-    required
-  >
-    <option value="">Select Father</option>
-    {fatherOptions.map((father, idx) => (
-      <option key={idx} value={father}>
-        {father}
-      </option>
-    ))}
-  </select>
-) : (
-  <input
-    type="text"
-    name="fatherName"
-    placeholder="Father's Name"
-    className="inputcl"
-    value={formData.fatherName}
-    onChange={handleChange}
-    required
-  />
-)}
+        {fatherOptions.length > 0 ? (
+          <select
+            name="fatherName"
+            className="inputcl"
+            value={formData.fatherName}
+            onChange={(e) => {
+              const selectedFather = e.target.value;
+              const matched = matchedStudents.find(
+                (s) => s.fatherName === selectedFather
+              );
+              setFormData((prevData) => ({
+                ...prevData,
+                fatherName: selectedFather,
+                batch: matched?.batch || prevData.batch,
+              }));
+            }}
+            required
+          >
+            <option value="">Select Father</option>
+            {fatherOptions.map((father, idx) => (
+              <option key={idx} value={father}>
+                {father}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            type="text"
+            name="fatherName"
+            placeholder="Father's Name"
+            className="inputcl"
+            value={formData.fatherName}
+            onChange={handleChange}
+            required
+          />
+        )}
 
-
-        <select className="selectcl" name="batch" onChange={handleChange} value={formData.batch}>
+        <select
+          className="selectcl"
+          name="batch"
+          onChange={handleChange}
+          value={formData.batch}
+        >
           <option value="Arjun">Arjun</option>
           <option value="Eklavya">Eklavya</option>
           <option value="Bhism">Bhism</option>
@@ -567,7 +573,12 @@ const fetchStudentDetails = async (name) => {
           <option value="Toppers">Toppers</option>
         </select>
 
-        <select className="selectcl" name="testType" onChange={handleChange} value={formData.testType}>
+        <select
+          className="selectcl"
+          name="testType"
+          onChange={handleChange}
+          value={formData.testType}
+        >
           <option value="jeemains">JEE Mains</option>
           <option value="jeeadvanced">JEE Advanced</option>
           <option value="neet">NEET</option>
@@ -608,7 +619,8 @@ const fetchStudentDetails = async (name) => {
           </div>
         ))}
 
-        {formData.testType === "neet" || ["Dron", "Madhav", "Nakul"].includes(formData.batch) ? (
+        {formData.testType === "neet" ||
+        ["Dron", "Madhav", "Nakul"].includes(formData.batch) ? (
           <div>
             <h4>BIOLOGY</h4>
             <input
@@ -647,7 +659,11 @@ const fetchStudentDetails = async (name) => {
               placeholder="Correct marks"
               value={formData.subjectMarks.mathematics.correctMark}
               onChange={(e) =>
-                handleSubjectChange("mathematics", "correctMark", e.target.value)
+                handleSubjectChange(
+                  "mathematics",
+                  "correctMark",
+                  e.target.value
+                )
               }
               required
             />
@@ -656,7 +672,11 @@ const fetchStudentDetails = async (name) => {
               placeholder="Incorrect marks"
               value={formData.subjectMarks.mathematics.incorrectMark}
               onChange={(e) =>
-                handleSubjectChange("mathematics", "incorrectMark", e.target.value)
+                handleSubjectChange(
+                  "mathematics",
+                  "incorrectMark",
+                  e.target.value
+                )
               }
               required
             />
@@ -671,11 +691,12 @@ const fetchStudentDetails = async (name) => {
             />
           </div>
         )}
-        <button className="passwordbttn" type="submit">Save Details</button>
+        <button className="passwordbttn" type="submit">
+          Save Details
+        </button>
       </form>
     </div>
   );
 };
 
 export default SetDetails;
-

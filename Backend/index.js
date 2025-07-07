@@ -100,12 +100,92 @@ app.get("/", (req, res) => {
 //     res.status(500).json({ error: err.message });
 //   }
 // });
+
+
+//my previous code
+// app.post("/api/results", async (req, res) => {
+//   try {
+//     const { name, fatherName, testType, testDate, subjectMarks, batch } = req.body;
+
+//     // Convert to YYYY-MM-DD format string
+//     // const testDateFormatted = new Date(testDate).toISOString().split("T")[0];
+//     const testDateFormatted = testDate; // already in correct format
+
+//     let totalMarks = 0;
+
+//     // Calculate total marks
+//     if (["dron", "madhav", "nakul"].includes(batch.toLowerCase())) {
+//       totalMarks =
+//         subjectMarks.physics.totalMark +
+//         subjectMarks.chemistry.totalMark +
+//         subjectMarks.biology.totalMark;
+//     } else {
+//       totalMarks =
+//         subjectMarks.physics.totalMark +
+//         subjectMarks.chemistry.totalMark +
+//         subjectMarks.mathematics.totalMark;
+//     }
+
+//     // Check for duplicate entry
+//     const duplicate = await Result.findOne({
+//       name,
+//       fatherName,
+//       testType,
+//       testDate: testDateFormatted,
+//     });
+
+//     if (duplicate) {
+//       return res.status(409).json({ message: "⚠️ Result already exists for this test." });
+//     }
+
+//     // Reuse studentCode if exists
+//     const existing = await Result.findOne({ name, fatherName });
+//     let studentCode = existing?.studentCode;
+
+//     if (!studentCode) {
+//       studentCode = Math.floor(10000 + Math.random() * 90000).toString();
+//     }
+
+//     const result = new Result({
+//       name,
+//       fatherName,
+//       batch,
+//       testType,
+//       testDate: testDateFormatted, // ✅ Properly formatted date
+//       subjectMarks:
+//       ["dron", "madhav", "nakul"].includes(batch.toLowerCase())
+//           ? {
+//               physics: subjectMarks.physics,
+//               chemistry: subjectMarks.chemistry,
+//               biology: subjectMarks.biology,
+//             }
+//           : {
+//               physics: subjectMarks.physics,
+//               chemistry: subjectMarks.chemistry,
+//               mathematics: subjectMarks.mathematics,
+//             },
+//       totalMarks,
+//       studentCode,
+//     });
+
+//     await result.save();
+//     res.status(201).json({ message: "✅ Result saved successfully!", studentCode });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
 app.post("/api/results", async (req, res) => {
   try {
-    const { name, fatherName, testType, testDate, subjectMarks, batch } = req.body;
+    let { name, fatherName, testType, testDate, subjectMarks, batch } = req.body;
 
-    // Convert to YYYY-MM-DD format string
-    // const testDateFormatted = new Date(testDate).toISOString().split("T")[0];
+    // Normalize for matching
+    const normalizedName = name.trim().toLowerCase();
+    const normalizedFatherName = fatherName.trim().toLowerCase();
+
+    // Format for storing (capitalize first letter of each word)
+    const formattedName = toTitleCase(name.trim());
+    const formattedFatherName = toTitleCase(fatherName.trim());
+
     const testDateFormatted = testDate; // already in correct format
 
     let totalMarks = 0;
@@ -123,10 +203,10 @@ app.post("/api/results", async (req, res) => {
         subjectMarks.mathematics.totalMark;
     }
 
-    // Check for duplicate entry
+    // Case-insensitive duplicate check
     const duplicate = await Result.findOne({
-      name,
-      fatherName,
+      name: { $regex: `^${normalizedName}$`, $options: 'i' },
+      fatherName: { $regex: `^${normalizedFatherName}$`, $options: 'i' },
       testType,
       testDate: testDateFormatted,
     });
@@ -135,22 +215,27 @@ app.post("/api/results", async (req, res) => {
       return res.status(409).json({ message: "⚠️ Result already exists for this test." });
     }
 
-    // Reuse studentCode if exists
-    const existing = await Result.findOne({ name, fatherName });
+    // Reuse studentCode if student exists (case-insensitive)
+    const existing = await Result.findOne({
+      name: { $regex: `^${normalizedName}$`, $options: 'i' },
+      fatherName: { $regex: `^${normalizedFatherName}$`, $options: 'i' },
+    });
+
     let studentCode = existing?.studentCode;
 
     if (!studentCode) {
       studentCode = Math.floor(10000 + Math.random() * 90000).toString();
     }
 
+    // Create new result
     const result = new Result({
-      name,
-      fatherName,
+      name: formattedName,
+      fatherName: formattedFatherName,
       batch,
       testType,
-      testDate: testDateFormatted, // ✅ Properly formatted date
+      testDate: testDateFormatted,
       subjectMarks:
-      ["dron", "madhav", "nakul"].includes(batch.toLowerCase())
+        ["dron", "madhav", "nakul"].includes(batch.toLowerCase())
           ? {
               physics: subjectMarks.physics,
               chemistry: subjectMarks.chemistry,
@@ -171,6 +256,17 @@ app.post("/api/results", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// Helper: Capitalize first letter of each word
+function toTitleCase(str) {
+  return str
+    .toLowerCase()
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+
 
 
 // app.get("/api/resultbycode", async (req, res) => {
