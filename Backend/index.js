@@ -188,20 +188,39 @@ app.post("/api/results", async (req, res) => {
 
     const testDateFormatted = testDate; // already in correct format
 
-    let totalMarks = 0;
+    // let totalMarks = 0;
 
-    // Calculate total marks
-    if (["dron", "madhav", "nakul"].includes(batch.toLowerCase())) {
-      totalMarks =
-        subjectMarks.physics.totalMark +
-        subjectMarks.chemistry.totalMark +
-        subjectMarks.biology.totalMark;
-    } else {
-      totalMarks =
-        subjectMarks.physics.totalMark +
-        subjectMarks.chemistry.totalMark +
-        subjectMarks.mathematics.totalMark;
-    }
+    // // Calculate total marks
+    // if (["dron", "madhav", "nakul"].includes(batch.toLowerCase())) {
+    //   totalMarks =
+    //     subjectMarks.physics.totalMark +
+    //     subjectMarks.chemistry.totalMark +
+    //     subjectMarks.biology.totalMark;
+    // } else {
+    //   totalMarks =
+    //     subjectMarks.physics.totalMark +
+    //     subjectMarks.chemistry.totalMark +
+    //     subjectMarks.mathematics.totalMark;
+    // }
+let totalMarks = 0;
+
+if (["dron", "madhav", "nakul"].includes(batch.toLowerCase())) {
+  totalMarks =
+    subjectMarks.physics.totalMark +
+    subjectMarks.chemistry.totalMark +
+    subjectMarks.biology.totalMark;
+} else if (batch.toLowerCase() === "z") {
+  totalMarks =
+    subjectMarks.physics.totalMark +
+    subjectMarks.chemistry.totalMark +
+    subjectMarks.mathematics.totalMark +
+    subjectMarks.biology.totalMark;
+} else {
+  totalMarks =
+    subjectMarks.physics.totalMark +
+    subjectMarks.chemistry.totalMark +
+    subjectMarks.mathematics.totalMark;
+}
 
     // Case-insensitive duplicate check
     const duplicate = await Result.findOne({
@@ -234,18 +253,37 @@ app.post("/api/results", async (req, res) => {
       batch,
       testType,
       testDate: testDateFormatted,
+      // subjectMarks:
+      //   ["dron", "madhav", "nakul"].includes(batch.toLowerCase())
+      //     ? {
+      //         physics: subjectMarks.physics,
+      //         chemistry: subjectMarks.chemistry,
+      //         biology: subjectMarks.biology,
+      //       }
+      //     : {
+      //         physics: subjectMarks.physics,
+      //         chemistry: subjectMarks.chemistry,
+      //         mathematics: subjectMarks.mathematics,
+      //       },
       subjectMarks:
-        ["dron", "madhav", "nakul"].includes(batch.toLowerCase())
-          ? {
-              physics: subjectMarks.physics,
-              chemistry: subjectMarks.chemistry,
-              biology: subjectMarks.biology,
-            }
-          : {
-              physics: subjectMarks.physics,
-              chemistry: subjectMarks.chemistry,
-              mathematics: subjectMarks.mathematics,
-            },
+  ["dron", "madhav", "nakul"].includes(batch.toLowerCase())
+    ? {
+        physics: subjectMarks.physics,
+        chemistry: subjectMarks.chemistry,
+        biology: subjectMarks.biology,
+      }
+    : batch.toLowerCase() === "z"
+    ? {
+        physics: subjectMarks.physics,
+        chemistry: subjectMarks.chemistry,
+        mathematics: subjectMarks.mathematics,
+        biology: subjectMarks.biology,
+      }
+    : {
+        physics: subjectMarks.physics,
+        chemistry: subjectMarks.chemistry,
+        mathematics: subjectMarks.mathematics,
+      },
       totalMarks,
       studentCode,
     });

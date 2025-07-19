@@ -395,10 +395,20 @@ const SetDetails = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // const totalMarks =
+    //   formData.subjectMarks.physics.totalMark +
+    //   formData.subjectMarks.chemistry.totalMark +
+    //   (formData.testType === "neet"
+    //     ? formData.subjectMarks.biology.totalMark
+    //     : formData.subjectMarks.mathematics.totalMark);
     const totalMarks =
       formData.subjectMarks.physics.totalMark +
       formData.subjectMarks.chemistry.totalMark +
-      (formData.testType === "neet"
+      (formData.batch === "Z"
+        ? formData.subjectMarks.mathematics.totalMark +
+          formData.subjectMarks.biology.totalMark
+        : formData.testType === "neet" ||
+          ["Dron", "Madhav", "Nakul"].includes(formData.batch)
         ? formData.subjectMarks.biology.totalMark
         : formData.subjectMarks.mathematics.totalMark);
 
@@ -464,7 +474,22 @@ const SetDetails = () => {
   return (
     <div className="container">
       <h2>Set Student Details</h2>
-      <form id="student-form" onSubmit={handleSubmit}>
+      <form
+        id="student-form"
+        onSubmit={handleSubmit}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            const form = e.target.form;
+            const index = Array.prototype.indexOf.call(form, e.target);
+
+            // Move to next input if available
+            if (index > -1 && index + 1 < form.elements.length) {
+              e.preventDefault();
+              form.elements[index + 1].focus();
+            }
+          }
+        }}
+      >
         <input
           type="date"
           className="inputcl"
@@ -571,6 +596,7 @@ const SetDetails = () => {
           <option value="Dron">Dron</option>
           <option value="Nakul">Nakul</option>
           <option value="Toppers">Toppers</option>
+          <option value="Z">Z</option>
         </select>
 
         <select
@@ -584,9 +610,10 @@ const SetDetails = () => {
           <option value="neet">NEET</option>
           <option value="topictest">Topic Test</option>
           <option value="quiztest">Quiz Test</option>
+          <option value="other">Other</option>
         </select>
 
-        {["physics", "chemistry"].map((subject) => (
+        {/* {["physics", "chemistry"].map((subject) => (
           <div key={subject}>
             <h4>{subject.toUpperCase()}</h4>
             <input
@@ -690,7 +717,194 @@ const SetDetails = () => {
               required
             />
           </div>
+        )} */}
+        {["physics", "chemistry"].map((subject) => (
+          <div key={subject}>
+            <h4>{subject.toUpperCase()}</h4>
+            <input
+              type="number"
+              placeholder="Correct marks"
+              value={formData.subjectMarks[subject].correctMark}
+              onChange={(e) =>
+                handleSubjectChange(subject, "correctMark", e.target.value)
+              }
+              required
+            />
+            <input
+              type="number"
+              placeholder="Incorrect marks"
+              value={formData.subjectMarks[subject].incorrectMark}
+              onChange={(e) =>
+                handleSubjectChange(subject, "incorrectMark", e.target.value)
+              }
+              required
+            />
+            <input
+              type="number"
+              placeholder="Total Marks"
+              value={formData.subjectMarks[subject].totalMark}
+              onChange={(e) =>
+                handleSubjectChange(subject, "totalMark", e.target.value)
+              }
+              required
+            />
+          </div>
+        ))}
+
+        {/* Show Biology AND Mathematics if batch is Z */}
+        {formData.batch === "Z" ? (
+          <>
+            <div>
+              <h4>BIOLOGY</h4>
+              <input
+                type="number"
+                placeholder="Correct marks"
+                value={formData.subjectMarks.biology.correctMark}
+                onChange={(e) =>
+                  handleSubjectChange("biology", "correctMark", e.target.value)
+                }
+                required
+              />
+              <input
+                type="number"
+                placeholder="Incorrect marks"
+                value={formData.subjectMarks.biology.incorrectMark}
+                onChange={(e) =>
+                  handleSubjectChange(
+                    "biology",
+                    "incorrectMark",
+                    e.target.value
+                  )
+                }
+                required
+              />
+              <input
+                type="number"
+                placeholder="Total Marks"
+                value={formData.subjectMarks.biology.totalMark}
+                onChange={(e) =>
+                  handleSubjectChange("biology", "totalMark", e.target.value)
+                }
+                required
+              />
+            </div>
+
+            <div>
+              <h4>MATHEMATICS</h4>
+              <input
+                type="number"
+                placeholder="Correct marks"
+                value={formData.subjectMarks.mathematics.correctMark}
+                onChange={(e) =>
+                  handleSubjectChange(
+                    "mathematics",
+                    "correctMark",
+                    e.target.value
+                  )
+                }
+                required
+              />
+              <input
+                type="number"
+                placeholder="Incorrect marks"
+                value={formData.subjectMarks.mathematics.incorrectMark}
+                onChange={(e) =>
+                  handleSubjectChange(
+                    "mathematics",
+                    "incorrectMark",
+                    e.target.value
+                  )
+                }
+                required
+              />
+              <input
+                type="number"
+                placeholder="Total Marks"
+                value={formData.subjectMarks.mathematics.totalMark}
+                onChange={(e) =>
+                  handleSubjectChange(
+                    "mathematics",
+                    "totalMark",
+                    e.target.value
+                  )
+                }
+                required
+              />
+            </div>
+          </>
+        ) : formData.testType === "neet" ||
+          ["Dron", "Madhav", "Nakul"].includes(formData.batch) ? (
+          <div>
+            <h4>BIOLOGY</h4>
+            <input
+              type="number"
+              placeholder="Correct marks"
+              value={formData.subjectMarks.biology.correctMark}
+              onChange={(e) =>
+                handleSubjectChange("biology", "correctMark", e.target.value)
+              }
+              required
+            />
+            <input
+              type="number"
+              placeholder="Incorrect marks"
+              value={formData.subjectMarks.biology.incorrectMark}
+              onChange={(e) =>
+                handleSubjectChange("biology", "incorrectMark", e.target.value)
+              }
+              required
+            />
+            <input
+              type="number"
+              placeholder="Total Marks"
+              value={formData.subjectMarks.biology.totalMark}
+              onChange={(e) =>
+                handleSubjectChange("biology", "totalMark", e.target.value)
+              }
+              required
+            />
+          </div>
+        ) : (
+          <div>
+            <h4>MATHEMATICS</h4>
+            <input
+              type="number"
+              placeholder="Correct marks"
+              value={formData.subjectMarks.mathematics.correctMark}
+              onChange={(e) =>
+                handleSubjectChange(
+                  "mathematics",
+                  "correctMark",
+                  e.target.value
+                )
+              }
+              required
+            />
+            <input
+              type="number"
+              placeholder="Incorrect marks"
+              value={formData.subjectMarks.mathematics.incorrectMark}
+              onChange={(e) =>
+                handleSubjectChange(
+                  "mathematics",
+                  "incorrectMark",
+                  e.target.value
+                )
+              }
+              required
+            />
+            <input
+              type="number"
+              placeholder="Total Marks"
+              value={formData.subjectMarks.mathematics.totalMark}
+              onChange={(e) =>
+                handleSubjectChange("mathematics", "totalMark", e.target.value)
+              }
+              required
+            />
+          </div>
         )}
+
         <button className="passwordbttn" type="submit">
           Save Details
         </button>
