@@ -26,6 +26,7 @@ const Navbar = () => {
       {/* Navigation Links */}
       <div className={`navbar-links ${menuOpen ? "open" : ""}`}>
         <Link to="/" onClick={toggleMenu}>SetDetails</Link>
+        <Link to="/StudentCodesByDate" onClick={toggleMenu}>StudentCodesByDate</Link>
         <Link to="/result" onClick={toggleMenu}>Check Result</Link>
         <Link to="/resultdashboard" onClick={toggleMenu}>Batch Analysis</Link>
         <Link to="/quizanalysis" onClick={toggleMenu}>Quiz Analysis</Link>

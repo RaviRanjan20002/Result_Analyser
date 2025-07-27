@@ -331,6 +331,20 @@ function toTitleCase(str) {
 
 
 
+app.get('/api/studentCodes/by-date', async (req, res) => {
+  try {
+    const { date } = req.query;
+    if (!date) return res.status(400).json({ message: "Date is required" });
+
+    const results = await Result.find({ testDate: date }).select('name fatherName batch studentCode testDate');
+
+    if (!results.length) return res.status(404).json({ message: "No results found for this date" });
+
+    res.json(results);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching student codes for date", error: error.message });
+  }
+});
 
 app.get("/api/resultbycode", async (req, res) => {
   try {

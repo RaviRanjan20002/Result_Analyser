@@ -1,0 +1,212 @@
+/* Container */
+.student-codes-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading */
+.student-codes-container h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 24px;
+  font-weight: 700;
+}
+
+/* Input Group */
+.input-group {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap; /* allow wrapping on small screens */
+}
+
+.date-input {
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  outline-color: #4C9AFF;
+  transition: border-color 0.3s ease;
+  min-width: 180px;
+  flex: 1 1 180px; /* grow & shrink with min basis */
+  max-width: 250px;
+}
+
+.date-input:focus {
+  border-color: #1976d2;
+}
+
+/* Button */
+.fetch-button {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 9px 18px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  flex: 1 1 120px;
+  max-width: 150px;
+  min-width: 120px;
+}
+
+.fetch-button:hover {
+  background-color: #125ea1;
+}
+
+/* Loading and Error Text */
+.loading-text {
+  color: #555;
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.error-text {
+  color: #d32f2f;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.no-records {
+  color: #666;
+  text-align: center;
+  margin-top: 20px;
+  font-style: italic;
+}
+
+/* Table Styles */
+.students-table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 0 12px rgba(25, 118, 210, 0.15);
+  border-radius: 6px;
+  overflow: hidden;
+  word-wrap: break-word;
+}
+
+.students-table thead {
+  background-color: #1976d2;
+  color: white;
+}
+
+.students-table th,
+.students-table td {
+  padding: 12px 18px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  font-size: 15px;
+  white-space: nowrap; /* Prevent breaking inside cells */
+}
+
+.students-table tbody tr:hover {
+  background-color: #f1f7ff;
+}
+
+.students-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Responsive Styles */
+
+@media (max-width: 768px) {
+  .students-table th,
+  .students-table td {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+
+  .date-input,
+  .fetch-button {
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .input-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .students-table thead {
+    display: none; /* Hide table header on mobile for better layout */
+  }
+
+  .students-table,
+  .students-table tbody,
+  .students-table tr,
+  .students-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .students-table tr {
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  .students-table td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+    border-bottom: 1px solid #ddd;
+    white-space: normal;
+  }
+
+  .students-table td:last-child {
+    border-bottom: none;
+  }
+
+  /* Add labels before each TD using ::before */
+  .students-table td:nth-of-type(1)::before {
+    content: "Name:";
+    position: absolute;
+    left: 15px;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  .students-table td:nth-of-type(2)::before {
+    content: "Father's Name:";
+    position: absolute;
+    left: 15px;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  .students-table td:nth-of-type(3)::before {
+    content: "Batch:";
+    position: absolute;
+    left: 15px;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  .students-table td:nth-of-type(4)::before {
+    content: "Student Code:";
+    position: absolute;
+    left: 15px;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  .students-table td:nth-of-type(5)::before {
+    content: "Test Date:";
+    position: absolute;
+    left: 15px;
+    font-weight: 600;
+    text-align: left;
+  }
+}
