@@ -9,6 +9,8 @@ import QuizTestPerformance from './component/QuizTestPerformance';
 import CompareWithTopper from './component/CompareWithTopper';
 import OverallAnalysis from './component/OverallAnalysis';
 import StudentCodesByDate from './component/StudentCodesByDate';
+import BatchManagement from './component/BatchManagement';
+import SetDetailsPage from './component/Setdetail';
 const App = () => {
     return (
         <Router>
@@ -18,6 +20,7 @@ const App = () => {
                     <Route index element={<SetDetails/>} /> {/* Default page */}
                     <Route path="result" element={<GetDetails />} />
                     <Route path="StudentCodesByDate" element={<StudentCodesByDate/>} />
+                    <Route path="addbatch" element={<BatchManagement/>} />
                     <Route path="resultdashboard" element={<BatchResults/>} /> 
                     <Route path="quizanalysis" element={<QuizTestPerformance/>} /> 
                     <Route path="comparision" element={<CompareWithTopper/>} /> 

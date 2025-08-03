@@ -1,4 +1,4 @@
-import React, { useState ,useRef} from "react";
+import React, { useState } from "react";
 
 import axios from "axios";
 import "../styles/StudentCodesByDate.css";
@@ -8,18 +8,9 @@ function StudentCodesByDate() {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [password, setPassword] = useState("");
-  const [isAuthorized, setIsAuthorized] = useState(false);
 
-  const passwordInputRef = useRef(null);
-  const handlePasswordSubmit = () => {
-    if (password === "135246") {
-      setIsAuthorized(true);
-      setTimeout(() => passwordInputRef.current?.focus(), 100);
-    } else {
-      alert("❌ Incorrect Password. Try Again.");
-    }
-  };
+
+
   const fetchStudents = async () => {
     if (!date) {
       alert("Please select a date");
@@ -38,23 +29,7 @@ function StudentCodesByDate() {
     }
     setLoading(false);
   };
-  if (!isAuthorized) {
-    return (
-      <div className="Setcontainer">
-        <h2>👁️FOR OFFICE USE ONLY</h2>
-        <input
-          ref={passwordInputRef}
-          type="password"
-          placeholder="Enter Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button className="passwordbttn" onClick={handlePasswordSubmit}>
-          Submit
-        </button>
-      </div>
-    );
-  }
+
   return (
     <div className="student-codes-container">
       <h2>Fetch Student Codes By Date</h2>

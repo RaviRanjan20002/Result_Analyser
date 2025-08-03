@@ -1,3 +1,39 @@
+
+/* CSS */
+.button-54 {
+  font-family: "Open Sans", sans-serif;
+  font-size: 16px;
+  letter-spacing: 2px;
+  margin-left: 30%;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: #070a64;
+  cursor: pointer;
+  border: 3px solid;
+  padding: 0.25em 0.5em;
+  box-shadow: 1px 1px 0px 0px, 2px 2px 0px 0px, 3px 3px 0px 0px, 4px 4px 0px 0px, 5px 5px 0px 0px;
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-54:active {
+  box-shadow: 0px 0px 0px 0px;
+  top: 5px;
+  left: 5px;
+}
+
+@media (min-width: 768px) {
+  .button-54 {
+    padding: 0.25em 0.75em;
+  }
+}
+@media(min-width: 480px) {
+  .button-54 {
+    font-size: 18px;
+  }
+}
 /* Container */
 .student-codes-container {
   max-width: 900px;
@@ -122,6 +158,7 @@
   .students-table td {
     padding: 8px 10px;
     font-size: 14px;
+    color:#333;
   }
 
   .date-input,
@@ -136,11 +173,14 @@
   }
 }
 
-@media (max-width: 480px) {
-  .students-table thead {
-    display: none; /* Hide table header on mobile for better layout */
-  }
 
+@media (max-width: 480px) {
+  .students-table {
+    border: 0;
+  }
+  .students-table thead {
+    display: none;
+  }
   .students-table,
   .students-table tbody,
   .students-table tr,
@@ -148,65 +188,44 @@
     display: block;
     width: 100%;
   }
-
   .students-table tr {
     margin-bottom: 20px;
-    border: 1px solid #ccc;
+    background: #fff;
     border-radius: 6px;
-    padding: 10px;
-    box-sizing: border-box;
+    box-shadow: 0 1px 4px rgba(25, 118, 210, 0.08);
+    padding: 10px 0;
   }
-
   .students-table td {
-    text-align: right;
-    padding-left: 50%;
+    /* Remove float and set relative for label positioning */
+    text-align: left;
+    padding-left: 44%;
+    padding-top: 10px;
+    padding-bottom: 10px;
     position: relative;
-    border-bottom: 1px solid #ddd;
-    white-space: normal;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 15px;
+    min-height: 36px;
+    background: inherit;
+    word-break: break-word;
   }
-
   .students-table td:last-child {
     border-bottom: none;
   }
-
-  /* Add labels before each TD using ::before */
-  .students-table td:nth-of-type(1)::before {
-    content: "Name:";
+  /* Add labels */
+  .students-table td:nth-of-type(1)::before { content: "Name:"; }
+  .students-table td:nth-of-type(2)::before { content: "Father's Name:"; }
+  .students-table td:nth-of-type(3)::before { content: "Batch:"; }
+  .students-table td:nth-of-type(4)::before { content: "Student Code:"; }
+  .students-table td:nth-of-type(5)::before { content: "Test Date:"; }
+  .students-table td::before {
     position: absolute;
     left: 15px;
-    font-weight: 600;
+    top: 10px;
+    font-weight: bold;
+    color: #1976d2;
+    font-size: 14px;
+    min-width: 100px;
     text-align: left;
-  }
-
-  .students-table td:nth-of-type(2)::before {
-    content: "Father's Name:";
-    position: absolute;
-    left: 15px;
-    font-weight: 600;
-    text-align: left;
-  }
-
-  .students-table td:nth-of-type(3)::before {
-    content: "Batch:";
-    position: absolute;
-    left: 15px;
-    font-weight: 600;
-    text-align: left;
-  }
-
-  .students-table td:nth-of-type(4)::before {
-    content: "Student Code:";
-    position: absolute;
-    left: 15px;
-    font-weight: 600;
-    text-align: left;
-  }
-
-  .students-table td:nth-of-type(5)::before {
-    content: "Test Date:";
-    position: absolute;
-    left: 15px;
-    font-weight: 600;
-    text-align: left;
+    white-space: nowrap;
   }
 }

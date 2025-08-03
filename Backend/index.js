@@ -32,6 +32,14 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to MongoDB!"))
   .catch((err) => console.error("MongoDB Connection Error:", err));
+//batch schema
+
+const batchSchema = new mongoose.Schema({
+  name: { type: String, required: true, unique: true }
+}, { timestamps: true });
+
+const Batch = mongoose.model('Batch', batchSchema);
+
 // Define Mongoose Schema
 const resultSchema = new mongoose.Schema({
   testDate: String,
@@ -50,10 +58,35 @@ const resultSchema = new mongoose.Schema({
 });
 
 const Result = mongoose.model("Result", resultSchema);
+//for adding batch
+
+ 
 app.get("/", (req, res) => {
   res.send("Server is running!");
 });
 
+// Get all batches
+app.get("/api/batches", async (req, res) => {
+  try {
+    const batches = await Batch.find().sort({ name: 1 });
+    res.json(batches);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching batches", error: error.message });
+  }
+});
+app.post("/api/batches/add", async (req, res) => {
+  try {
+    const { name } = req.body;
+    if (!name) return res.status(400).json({ message: "Batch name required" });
+    const existing = await Batch.findOne({ name: new RegExp(`^${name}$`, 'i') });
+    if (existing) return res.status(409).json({ message: "Batch already exists" });
+    const batch = new Batch({ name });
+    await batch.save();
+    res.status(201).json({ message: "Batch added successfully", batch });
+  } catch (error) {
+    res.status(500).json({ message: "Error adding batch", error: error.message });
+  }
+});
 // // ✅ API to Add Student Test Details
 // app.post("/api/results", async (req, res) => {
 //   try {
@@ -330,7 +363,27 @@ function toTitleCase(str) {
 
 
 
+// GET student by studentCode
+app.get('/api/studentByCode/:code', async (req, res) => {
+  const studentCode = req.params.code;
 
+  try {
+    const student = await Result.findOne({ studentCode });
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    res.json({
+      name: student.name,
+      fatherName: student.fatherName,
+      batch: student.batch,
+    });
+  } catch (err) {
+    console.error("Error fetching student by code:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 app.get('/api/studentCodes/by-date', async (req, res) => {
   try {
     const { date } = req.query;
