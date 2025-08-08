@@ -71,6 +71,7 @@ const CompareWithTopper = () => {
         <option value="Dron">Dron</option>
         <option value="Nakul">Nakul</option>
         <option value="Toppers">Toppers</option>
+        <option value="Z">Z</option>
       </select>
 
       <select className="selectclass" value={testType} onChange={(e) => setTestType(e.target.value)}>
@@ -79,6 +80,8 @@ const CompareWithTopper = () => {
         <option value="neet">NEET</option>
         <option value="jeemains">JEE Mains</option>
         <option value="jeeadvanced">JEE Advanced</option>
+        <option value="other">Other</option>
+
       </select>
 
       <input

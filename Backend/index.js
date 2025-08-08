@@ -74,6 +74,38 @@ app.get("/api/batches", async (req, res) => {
     res.status(500).json({ message: "Error fetching batches", error: error.message });
   }
 });
+// Get unique students by batch
+app.get("/api/studentsByBatch/:batch", async (req, res) => {
+  try {
+    const { batch } = req.params;
+
+    const students = await Result.aggregate([
+      { $match: { batch } },
+      {
+        $group: {
+          _id: {
+            name: "$name",
+            fatherName: "$fatherName",
+            studentCode: "$studentCode",
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          name: "$_id.name",
+          fatherName: "$_id.fatherName",
+          studentCode: "$_id.studentCode",
+        },
+      },
+      { $sort: { name: 1 } },
+    ]);
+
+    res.json(students);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 app.post("/api/batches/add", async (req, res) => {
   try {
     const { name } = req.body;
@@ -337,6 +369,59 @@ function toTitleCase(str) {
     .join(" ");
 }
 
+app.post("/api/generate-code", async (req, res) => {
+  try {
+    const { name, fatherName, batch, testDate } = req.body;
+
+    if (!name || !fatherName || !batch || !testDate) {
+      return res.status(400).json({ message: "❌ All fields are required." });
+    }
+
+    const normalizedName = name.trim().toLowerCase();
+    const normalizedFatherName = fatherName.trim().toLowerCase();
+
+    const formattedName = toTitleCase(name.trim());
+    const formattedFatherName = toTitleCase(fatherName.trim());
+
+    // Check if a student code already exists
+    const existing = await Result.findOne({
+      name: { $regex: `^${normalizedName}$`, $options: "i" },
+      fatherName: { $regex: `^${normalizedFatherName}$`, $options: "i" },
+    });
+
+    let studentCode = existing?.studentCode;
+
+    if (!studentCode) {
+      studentCode = Math.floor(10000 + Math.random() * 90000).toString();
+
+      // Save minimal info into Result model just to store code (no marks yet)
+      const result = new Result({
+        name: formattedName,
+        fatherName: formattedFatherName,
+        batch,
+        testDate,
+        studentCode,
+        subjectMarks: {},
+        totalMarks: 0,
+        testType: "", // can be filled later
+      });
+
+      await result.save();
+    }
+
+    return res.status(201).json({ studentCode, name: formattedName, fatherName: formattedFatherName, batch, testDate });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+function toTitleCase(str) {
+  return str
+    .toLowerCase()
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
 
 
 

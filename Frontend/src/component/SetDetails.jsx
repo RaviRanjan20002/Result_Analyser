@@ -6,6 +6,7 @@ const SetDetails = () => {
   const [password, setPassword] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);
   const passwordInputRef = useRef(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     testDate: "",
@@ -44,7 +45,9 @@ const SetDetails = () => {
     if (!code || code.length !== 5) return;
     setLoading(true);
     try {
-      const res = await axios.get(`https://result-analyserr.onrender.com/api/studentByCode/${code}`);
+      const res = await axios.get(
+        `https://result-analyserr.onrender.com/api/studentByCode/${code}`
+      );
       if (res.data) {
         setStudentInfo(res.data);
       } else {
@@ -62,7 +65,6 @@ const SetDetails = () => {
     if (formData.studentCode && formData.testDate && formData.testType) {
       fetchStudentByCode(formData.studentCode);
     }
-    
   }, [formData.studentCode, formData.testDate, formData.testType]);
 
   const handleSubjectChange = (subject, field, value) => {
@@ -84,14 +86,31 @@ const SetDetails = () => {
       alert("⚠️ Student details not found for this code.");
       return;
     }
-    const totalMarks =
-      formData.subjectMarks.physics.totalMark +
-      formData.subjectMarks.chemistry.totalMark +
-      (studentInfo?.batch === "Z"
-        ? formData.subjectMarks.mathematics.totalMark + formData.subjectMarks.biology.totalMark
-        : formData.testType === "neet" || ["Dron", "Madhav", "Nakul"].includes(studentInfo?.batch)
-        ? formData.subjectMarks.biology.totalMark
-        : formData.subjectMarks.mathematics.totalMark);
+    setSubmitting(true);
+
+    let totalMarks = 0;
+
+    // Physics + Chemistry always included
+    totalMarks += formData.subjectMarks.physics.totalMark;
+    totalMarks += formData.subjectMarks.chemistry.totalMark;
+
+    // NEET / NEET Tough / NEET Moderate → Biology only
+    if (
+      formData.testType === "neet" ||
+      formData.testType === "neettough" ||
+      formData.testType === "neetmoderate"
+    ) {
+      totalMarks += formData.subjectMarks.biology.totalMark;
+    }
+    // "other" + Z batch → both Mathematics and Biology
+    else if (formData.testType === "other" && studentInfo?.batch === "Z") {
+      totalMarks += formData.subjectMarks.mathematics.totalMark;
+      totalMarks += formData.subjectMarks.biology.totalMark;
+    }
+    // Default → Mathematics only
+    else {
+      totalMarks += formData.subjectMarks.mathematics.totalMark;
+    }
 
     const payload = {
       studentCode: formData.studentCode,
@@ -105,7 +124,10 @@ const SetDetails = () => {
     };
 
     try {
-      await axios.post("https://result-analyserr.onrender.com/api/results", payload);
+      await axios.post(
+        "https://result-analyserr.onrender.com/api/results",
+        payload
+      );
       alert("✅ Result Saved Successfully!");
       setFormData({
         testDate: "",
@@ -122,11 +144,14 @@ const SetDetails = () => {
       setStudentInfo(null);
     } catch (err) {
       if (err.response?.status === 409) {
-        alert("⚠️ Result already exists for this student, test type, and date.");
+        alert(
+          "⚠️ Result already exists for this student, test type, and date."
+        );
       } else {
         alert("❌ Something went wrong while saving.");
       }
     }
+    setSubmitting(false);
   };
 
   if (!isAuthorized) {
@@ -163,18 +188,18 @@ const SetDetails = () => {
         <form
           id="student-form"
           onSubmit={handleSubmit}
-              onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            const form = e.target.form;
-            const index = Array.prototype.indexOf.call(form, e.target);
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              const form = e.target.form;
+              const index = Array.prototype.indexOf.call(form, e.target);
 
-            // Move to next input if available
-            if (index > -1 && index + 1 < form.elements.length) {
-              e.preventDefault();
-              form.elements[index + 1].focus();
+              // Move to next input if available
+              if (index > -1 && index + 1 < form.elements.length) {
+                e.preventDefault();
+                form.elements[index + 1].focus();
+              }
             }
-          }
-        }}
+          }}
         >
           <div className="flex-row">
             <div className="form-group">
@@ -211,8 +236,14 @@ const SetDetails = () => {
                 value={formData.testType}
               >
                 <option value="jeemains">JEE Mains</option>
+                <option value="jeemainsparttest">JEE Mains-Part Test</option>
+                <option value="jeemainscumulativetest">
+                  JEE Mains-Cumulative Test
+                </option>
                 <option value="jeeadvanced">JEE Advanced</option>
                 <option value="neet">NEET</option>
+                <option value="neettough">NEET Tough</option>
+                <option value="neetmoderate">NEET Moderate</option>
                 <option value="topictest">Topic Test</option>
                 <option value="quiztest">Quiz Test</option>
                 <option value="other">Other</option>
@@ -220,9 +251,7 @@ const SetDetails = () => {
             </div>
           </div>
 
-          {loading && (
-            <p className="info-msg">Loading student details...</p>
-          )}
+          {loading && <p className="info-msg">Loading student details...</p>}
 
           {studentInfo && (
             <div className="student-info-card bounce-in">
@@ -242,35 +271,12 @@ const SetDetails = () => {
           )}
 
           <div className="subject-section">
+            {/* Always show Physics & Chemistry */}
             {["physics", "chemistry"].map((subject) => (
               <div className="subject-card" key={subject}>
                 <div className="subject-title">{subject.toUpperCase()}</div>
-                {["correctMark", "incorrectMark", "totalMark"].map((type, idx) => (
-                  <input
-                    key={type}
-                    type="number"
-                    placeholder={
-                      type === "correctMark"
-                        ? "Correct"
-                        : type === "incorrectMark"
-                        ? "Incorrect"
-                        : "Total"
-                    }
-                    className={`marks-input ${idx === 2 ? "totalmark" : ""}`}
-                    value={formData.subjectMarks[subject][type]}
-                    onChange={(e) => handleSubjectChange(subject, type, e.target.value)}
-                    min={0}
-                    required
-                  />
-                ))}
-              </div>
-            ))}
-
-            {studentInfo?.batch === "Z" &&
-              ["mathematics", "biology"].map((subject) => (
-                <div className="subject-card" key={subject}>
-                  <div className="subject-title">{subject.toUpperCase()}</div>
-                  {["correctMark", "incorrectMark", "totalMark"].map((type, idx) => (
+                {["correctMark", "incorrectMark", "totalMark"].map(
+                  (type, idx) => (
                     <input
                       key={type}
                       type="number"
@@ -283,27 +289,26 @@ const SetDetails = () => {
                       }
                       className={`marks-input ${idx === 2 ? "totalmark" : ""}`}
                       value={formData.subjectMarks[subject][type]}
-                      onChange={(e) => handleSubjectChange(subject, type, e.target.value)}
-                      min={0}
+                      onChange={(e) =>
+                        handleSubjectChange(subject, type, e.target.value)
+                      }
+                      {...(type !== "totalMark" ? { min: 0 } : {})}
                       required
                     />
-                  ))}
-                </div>
-              ))}
+                  )
+                )}
+              </div>
+            ))}
 
-            {studentInfo?.batch !== "Z" && (
+            {/* Conditional Subjects */}
+            {formData.testType === "neet" ||
+            formData.testType === "neettough" ||
+            formData.testType === "neetmoderate" ? (
+              // Show Biology only
               <div className="subject-card">
-                <div className="subject-title">
-                  {formData.testType === "neet" ||
-                  ["Dron", "Madhav", "Nakul"].includes(studentInfo?.batch)
-                    ? "BIOLOGY"
-                    : "MATHEMATICS"}
-                </div>
-                {(
-                  ["Dron", "Madhav", "Nakul"].includes(studentInfo?.batch) ||
-                  formData.testType === "neet"
-                ) ? (
-                  ["correctMark", "incorrectMark", "totalMark"].map((type, idx) => (
+                <div className="subject-title">BIOLOGY</div>
+                {["correctMark", "incorrectMark", "totalMark"].map(
+                  (type, idx) => (
                     <input
                       key={type}
                       type="number"
@@ -319,12 +324,51 @@ const SetDetails = () => {
                       onChange={(e) =>
                         handleSubjectChange("biology", type, e.target.value)
                       }
-                      min={0}
+                      {...(type !== "totalMark" ? { min: 0 } : {})}
                       required
                     />
-                  ))
-                ) : (
-                  ["correctMark", "incorrectMark", "totalMark"].map((type, idx) => (
+                  )
+                )}
+              </div>
+            ) : formData.testType === "other" || studentInfo?.batch === "Z" ? (
+              // Show Both Mathematics and Biology
+              <>
+                {["mathematics", "biology"].map((subject) => (
+                  <div className="subject-card" key={subject}>
+                    <div className="subject-title">{subject.toUpperCase()}</div>
+                    {["correctMark", "incorrectMark", "totalMark"].map(
+                      (type, idx) => (
+                        <input
+                          key={type}
+                          type="number"
+                          placeholder={
+                            type === "correctMark"
+                              ? "Correct"
+                              : type === "incorrectMark"
+                              ? "Incorrect"
+                              : "Total"
+                          }
+                          className={`marks-input ${
+                            idx === 2 ? "totalmark" : ""
+                          }`}
+                          value={formData.subjectMarks[subject][type]}
+                          onChange={(e) =>
+                            handleSubjectChange(subject, type, e.target.value)
+                          }
+                          {...(type !== "totalMark" ? { min: 0 } : {})}
+                          required
+                        />
+                      )
+                    )}
+                  </div>
+                ))}
+              </>
+            ) : (
+              // Default: Show Mathematics only
+              <div className="subject-card">
+                <div className="subject-title">MATHEMATICS</div>
+                {["correctMark", "incorrectMark", "totalMark"].map(
+                  (type, idx) => (
                     <input
                       key={type}
                       type="number"
@@ -340,16 +384,20 @@ const SetDetails = () => {
                       onChange={(e) =>
                         handleSubjectChange("mathematics", type, e.target.value)
                       }
-                      min={0}
+                      {...(type !== "totalMark" ? { min: 0 } : {})}
                       required
                     />
-                  ))
+                  )
                 )}
               </div>
             )}
           </div>
-          <button type="submit" className="primary-btn wide-btn">
-            💾 Save Details
+          <button
+            type="submit"
+            className="primary-btn wide-btn"
+            disabled={submitting}
+          >
+            {submitting ? "⏳ Submitting..." : "💾 Save Details"}
           </button>
         </form>
       </div>

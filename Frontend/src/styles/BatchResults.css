@@ -240,3 +240,161 @@ input[type="date"] {
     -moz-appearance: auto;
   }  
 }
+/* --- Filters Container --- */
+.filters-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.filter-item {
+  flex: 1 1 200px; /* Flex properties for responsive layout */
+  min-width: 200px;
+  max-width: 240px;
+}
+
+/* --- Select & Input Styling --- */
+.filter-select,
+.filter-input {
+  width: 100%;
+  padding: 12px 18px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #334155;
+  background-color: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  -webkit-appearance: none; /* Removes default OS styling */
+  appearance: none;
+}
+
+/* Custom Arrow for Select */
+.filter-select {
+  background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%2394a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.2em;
+  cursor: pointer;
+}
+
+.filter-select:hover,
+.filter-input:hover {
+  border-color: #a5b4fc;
+}
+
+.filter-select:focus,
+.filter-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+/* Native date picker icon styling */
+.filter-input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.filter-input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* --- Button Styling --- */
+.filter-button {
+  padding: 10px 34px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(45deg, #4f46e5, #6366f1);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.filter-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(79, 70, 229, 0.3);
+}
+
+.filter-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(79, 70, 229, 0.2);
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 980px) {
+  .filters-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .filter-item {
+    max-width: none;
+  }
+}
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.header-title {
+  flex: 1;
+  text-align: center;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #25439e;
+  user-select: none;
+}
+
+.add-batch-button {
+  padding: 10px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(45deg, #4f46e5, #6366f1);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+  transition: background 0.3s ease, transform 0.2s ease;
+  position: relative;
+  left: 90px;
+}
+
+.add-batch-button:hover {
+  background: linear-gradient(45deg, #6366f1, #4f46e5);
+  transform: translateY(-2px);
+}
+
+.add-batch-button:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+  .header-container {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .header-title {
+    text-align: center;
+  }
+  .add-batch-button {
+  
+    align-self: center;
+    width: 100%;
+    max-width: 280px;
+  }
+}

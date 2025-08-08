@@ -1,7 +1,7 @@
-
-import React, { useState,useRef,useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import "../styles/BatchResults.css";
+import { useNavigate } from "react-router-dom";
 
 const BatchResults = () => {
   const [batch, setBatch] = useState("");
@@ -13,10 +13,10 @@ const BatchResults = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [loading, setLoading] = useState(false);
   const [batches, setBatches] = useState([]);
- 
-  
+  const navigate = useNavigate();
 
   const passwordInputRef = useRef(null);
+
   const handlePasswordSubmit = () => {
     if (password === "135246") {
       setIsAuthorized(true);
@@ -25,18 +25,22 @@ const BatchResults = () => {
       alert("❌ Incorrect Password. Try Again.");
     }
   };
-      useEffect(() => {
-      fetchBatches();
-    }, []);
-  
-    const fetchBatches = async () => {
-      try {
-        const response = await axios.get("https://result-analyserr.onrender.com/api/batches");
-        setBatches(response.data);
-      } catch (error) {
-        console.error("Error fetching batches:", error);
-      }
-    };
+
+  useEffect(() => {
+    fetchBatches();
+  }, []);
+
+  const fetchBatches = async () => {
+    try {
+      const response = await axios.get(
+        "https://result-analyserr.onrender.com/api/batches"
+      );
+      setBatches(response.data);
+    } catch (error) {
+      console.error("Error fetching batches:", error);
+    }
+  };
+
   const fetchBatchResults = async () => {
     if (!batch || !testType || !testDate) {
       setError("Please select batch, test type and test date.");
@@ -49,14 +53,13 @@ const BatchResults = () => {
     try {
       const response = await axios.get(
         `https://result-analyserr.onrender.com/api/results/batch/${batch}?testType=${testType}&testDate=${testDate}`
-        // `http://localhost:3001/api/results/batch/${batch}?testType=${testType}&testDate=${testDate}`
       );
-      // Sort by totalMarks descending before ranking
+
+      // Sort by totalMarks descending
       const sorted = response.data.sort(
         (a, b) => (b.totalMarks || 0) - (a.totalMarks || 0)
       );
       setResults(sorted);
-      // console.log("Fetched results:", sorted);
     } catch (err) {
       setResults([]);
       if (err.response && err.response.status === 404) {
@@ -64,16 +67,23 @@ const BatchResults = () => {
       } else {
         setError("Something went wrong while fetching data.");
       }
-    }
-    finally {
-      setLoading(false); // Hide loader
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Determine subject display rules
   const isNeetBatch =
     results.length > 0 &&
-    ["dron", "madhav", "nakul"].includes(results[0]?.batch?.toLowerCase());
-  const subjectName = isNeetBatch ? "Biology" : "Mathematics";
+    ["neet", "neettough", "neetmoderate"].includes(
+      results[0]?.testType?.toLowerCase()
+    );
+
+  const isZBatchOther =
+    results.length > 0 &&
+    results[0]?.batch?.toLowerCase() === "z" &&
+    results[0]?.testType?.toLowerCase() === "other";
+
   if (!isAuthorized) {
     return (
       <div className="Setcontainer">
@@ -91,75 +101,73 @@ const BatchResults = () => {
       </div>
     );
   }
+
   return (
     <div className="batch-results-container">
-      <h1>Search Batch Results</h1>
-      <div className="filters">
-      {batches ? (<select
-          className="selectclass"
-          onChange={(e) => setBatch(e.target.value)}
-          value={batch}
-        >
-          <option value="">Select Batch</option>
-          <option value="Arjun">Arjun</option>
-          <option value="Eklavya">Eklavya</option>
-          <option value="Bhism">Bhism</option>
-          <option value="Bheem">Bheem</option>
-          <option value="Madhav">Madhav</option>
-          <option value="Dron">Dron</option>
-          <option value="Nakul">Nakul</option>
-          <option value="Toppers">Toppers</option>
-          <option value="Z">Z</option>
-        </select>) : (
-         <select
-  className="selectclass"
-  name="batch"
-  onChange={(e) => setBatch(e.target.value)}
-  value={batch}
-  aria-required="true"
-  aria-label="Select batch"
->
-  <option value="">Select Batch</option> {/* <-- Add this */}
-  {batches.map((b) => (
-    <option key={b._id} value={b.name}>
-      {b.name}
-    </option>
-  ))}
-</select>
-        )}
-        <select
-          className="selectclass"
-          onChange={(e) => setTestType(e.target.value)}
-          value={testType}
-        >
-          <option value="">Select Test Type</option>
-          <option value="jeemains">JEE Mains</option>
-          <option value="jeeadvanced">JEE Advanced</option>
-          <option value="neet">NEET</option>
-          <option value="topictest">Topic Test</option>
-          <option value="quiztest">Quiz Test</option>
-        </select>
+      <div className="header-container">
+        <h1 className="header-title">Search Batch Results</h1>
+      </div>
 
-        <input
-          type="date"
-          className="inputclass"
-          placeholder="Enter Test Date"
-          value={testDate}
-          onChange={(e) => setTestDate(e.target.value)}
-        />
+      <div className="filters-container">
+        {/* Batch Dropdown */}
+        <div className="filter-item">
+          <select
+            className="filter-select"
+            name="batch"
+            onChange={(e) => setBatch(e.target.value)}
+            value={batch}
+          >
+            <option value="">Select Batch</option>
+            {batches.map((b) => (
+              <option key={b._id} value={b.name}>
+                {b.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <button className="batch-button" onClick={fetchBatchResults}>
-          Search
-        </button>
+        {/* Test Type Dropdown */}
+        <div className="filter-item">
+          <select
+            className="filter-select"
+            onChange={(e) => setTestType(e.target.value)}
+            value={testType}
+          >
+            <option value="">Select Test Type</option>
+            <option value="jeemains">JEE Mains</option>
+            <option value="jeeadvanced">JEE Advanced</option>
+            <option value="neet">NEET</option>
+            <option value="topictest">Topic Test</option>
+            <option value="quiztest">Quiz Test</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        {/* Date Input */}
+        <div className="filter-item">
+          <input
+            type="date"
+            className="filter-input"
+            value={testDate}
+            onChange={(e) => setTestDate(e.target.value)}
+          />
+        </div>
+
+        {/* Search Button */}
+        <div className="filter-item">
+          <button className="filter-button" onClick={fetchBatchResults}>
+            Search
+          </button>
+        </div>
       </div>
 
       {error && <p className="error-message">{error}</p>}
-            {/* SHOW "Searching..." WHEN LOADING */}
-            {loading && (
+      {loading && (
         <p style={{ textAlign: "center", marginTop: "20px", fontWeight: "bold" }}>
           Searching...
         </p>
       )}
+
       {results.length > 0 ? (
         <table className="results-table">
           <thead>
@@ -176,9 +184,30 @@ const BatchResults = () => {
               <th>Chemistry (Correct)</th>
               <th>Chemistry (Incorrect)</th>
               <th>Chemistry (Total)</th>
-              <th>{subjectName} (Correct)</th>
-              <th>{subjectName} (Incorrect)</th>
-              <th>{subjectName} (Total)</th>
+              {isNeetBatch && (
+                <>
+                  <th>Biology (Correct)</th>
+                  <th>Biology (Incorrect)</th>
+                  <th>Biology (Total)</th>
+                </>
+              )}
+              {isZBatchOther && (
+                <>
+                  <th>Mathematics (Correct)</th>
+                  <th>Mathematics (Incorrect)</th>
+                  <th>Mathematics (Total)</th>
+                  <th>Biology (Correct)</th>
+                  <th>Biology (Incorrect)</th>
+                  <th>Biology (Total)</th>
+                </>
+              )}
+              {!isNeetBatch && !isZBatchOther && (
+                <>
+                  <th>Mathematics (Correct)</th>
+                  <th>Mathematics (Incorrect)</th>
+                  <th>Mathematics (Total)</th>
+                </>
+              )}
               <th>Total Marks</th>
             </tr>
           </thead>
@@ -213,43 +242,39 @@ const BatchResults = () => {
                     <td>{result.batch}</td>
                     <td>{result.testType}</td>
                     <td>{result.subjectMarks?.physics?.correctMark ?? "-"}</td>
-                    <td>
-                      {result.subjectMarks?.physics?.incorrectMark ?? "-"}
-                    </td>
+                    <td>{result.subjectMarks?.physics?.incorrectMark ?? "-"}</td>
                     <td>{result.subjectMarks?.physics?.totalMark ?? "-"}</td>
-                    <td>
-                      {result.subjectMarks?.chemistry?.correctMark ?? "-"}
-                    </td>
-                    <td>
-                      {result.subjectMarks?.chemistry?.incorrectMark ?? "-"}
-                    </td>
+                    <td>{result.subjectMarks?.chemistry?.correctMark ?? "-"}</td>
+                    <td>{result.subjectMarks?.chemistry?.incorrectMark ?? "-"}</td>
                     <td>{result.subjectMarks?.chemistry?.totalMark ?? "-"}</td>
-                    {isNeetBatch ? (
+
+                    {isNeetBatch && (
                       <>
-                        <td>
-                          {result.subjectMarks?.biology?.correctMark ?? "-"}
-                        </td>
-                        <td>
-                          {result.subjectMarks?.biology?.incorrectMark ?? "-"}
-                        </td>
-                        <td>
-                          {result.subjectMarks?.biology?.totalMark ?? "-"}
-                        </td>
-                      </>
-                    ) : (
-                      <>
-                        <td>
-                          {result.subjectMarks?.mathematics?.correctMark ?? "-"}
-                        </td>
-                        <td>
-                          {result.subjectMarks?.mathematics?.incorrectMark ??
-                            "-"}
-                        </td>
-                        <td>
-                          {result.subjectMarks?.mathematics?.totalMark ?? "-"}
-                        </td>
+                        <td>{result.subjectMarks?.biology?.correctMark ?? "-"}</td>
+                        <td>{result.subjectMarks?.biology?.incorrectMark ?? "-"}</td>
+                        <td>{result.subjectMarks?.biology?.totalMark ?? "-"}</td>
                       </>
                     )}
+
+                    {isZBatchOther && (
+                      <>
+                        <td>{result.subjectMarks?.mathematics?.correctMark ?? "-"}</td>
+                        <td>{result.subjectMarks?.mathematics?.incorrectMark ?? "-"}</td>
+                        <td>{result.subjectMarks?.mathematics?.totalMark ?? "-"}</td>
+                        <td>{result.subjectMarks?.biology?.correctMark ?? "-"}</td>
+                        <td>{result.subjectMarks?.biology?.incorrectMark ?? "-"}</td>
+                        <td>{result.subjectMarks?.biology?.totalMark ?? "-"}</td>
+                      </>
+                    )}
+
+                    {!isNeetBatch && !isZBatchOther && (
+                      <>
+                        <td>{result.subjectMarks?.mathematics?.correctMark ?? "-"}</td>
+                        <td>{result.subjectMarks?.mathematics?.incorrectMark ?? "-"}</td>
+                        <td>{result.subjectMarks?.mathematics?.totalMark ?? "-"}</td>
+                      </>
+                    )}
+
                     <td className="marks-cell">{result.totalMarks ?? "-"}</td>
                   </tr>
                 );
@@ -265,3 +290,4 @@ const BatchResults = () => {
 };
 
 export default BatchResults;
+

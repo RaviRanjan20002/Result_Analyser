@@ -10,7 +10,8 @@ import CompareWithTopper from './component/CompareWithTopper';
 import OverallAnalysis from './component/OverallAnalysis';
 import StudentCodesByDate from './component/StudentCodesByDate';
 import BatchManagement from './component/BatchManagement';
-import SetDetailsPage from './component/Setdetail';
+import RegisterStudent from './component/RegisterStudent';
+import ViewStudentCodes from './component/ViewStudentCodes';
 const App = () => {
     return (
         <Router>
@@ -20,11 +21,13 @@ const App = () => {
                     <Route index element={<SetDetails/>} /> {/* Default page */}
                     <Route path="result" element={<GetDetails />} />
                     <Route path="StudentCodesByDate" element={<StudentCodesByDate/>} />
-                    <Route path="addbatch" element={<BatchManagement/>} />
+                    <Route path="registerStudent" element={<RegisterStudent/>} />
                     <Route path="resultdashboard" element={<BatchResults/>} /> 
                     <Route path="quizanalysis" element={<QuizTestPerformance/>} /> 
                     <Route path="comparision" element={<CompareWithTopper/>} /> 
-                    <Route path="graphicalanalysis" element={<OverallAnalysis/>} /> 
+                    <Route path="graphicalanalysis" element={<OverallAnalysis/>} />
+                    <Route path="batch-management" element={<BatchManagement />} /> 
+                    <Route path="/view-registered" element={<ViewStudentCodes/>} />
                 </Route>
             </Routes>
         </Router>

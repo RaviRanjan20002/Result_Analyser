@@ -24,15 +24,18 @@ const GetDetails = () => {
       console.error(err);
       setResults([]);
       setError("No results found for this student code.");
-    }finally {
-      setLoading(false); // <-- Hide loader
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Batch checks
   const isNeetBatch =
-  results.length > 0 &&
-  ["dron", "madhav", "nakul"].includes(results[0]?.batch?.toLowerCase());
-  const subjectName = isNeetBatch ? "Biology" : "Mathematics";
+    results.length > 0 &&
+    ["dron", "madhav", "nakul"].includes(results[0]?.batch?.toLowerCase());
+
+  const isZBatch =
+    results.length > 0 && results[0]?.batch?.toLowerCase() === "z";
 
   return (
     <div className="get-details-container">
@@ -51,20 +54,20 @@ const GetDetails = () => {
 
       {error && <p className="error-message">{error}</p>}
 
-         {/* SHOW "Searching..." WHEN LOADING */}
-         {loading && (
+      {loading && (
         <p style={{ textAlign: "center", marginTop: "20px", fontWeight: "bold" }}>
           Searching...
         </p>
       )}
 
-     {!loading && results.length > 0 && (
+      {!loading && results.length > 0 && (
         <div className="student-info">
           <h3>Student Information</h3>
           <p>Name: {results[0].name}</p>
           <p>Father's Name: {results[0].fatherName}</p>
         </div>
       )}
+
       {results.length > 0 ? (
         <table className="results-table">
           <thead>
@@ -80,9 +83,34 @@ const GetDetails = () => {
               <th>Chemistry (Correct Marks)</th>
               <th>Chemistry (Incorrect Marks)</th>
               <th>Chemistry (Total Marks)</th>
-              <th>{subjectName} (Correct Marks)</th>
-              <th>{subjectName} (Incorrect Marks)</th>
-              <th>{subjectName} (Total Marks)</th>
+
+              {isNeetBatch && !isZBatch && (
+                <>
+                  <th>Biology (Correct Marks)</th>
+                  <th>Biology (Incorrect Marks)</th>
+                  <th>Biology (Total Marks)</th>
+                </>
+              )}
+
+              {!isNeetBatch && !isZBatch && (
+                <>
+                  <th>Mathematics (Correct Marks)</th>
+                  <th>Mathematics (Incorrect Marks)</th>
+                  <th>Mathematics (Total Marks)</th>
+                </>
+              )}
+
+              {isZBatch && (
+                <>
+                  <th>Biology (Correct Marks)</th>
+                  <th>Biology (Incorrect Marks)</th>
+                  <th>Biology (Total Marks)</th>
+                  <th>Mathematics (Correct Marks)</th>
+                  <th>Mathematics (Incorrect Marks)</th>
+                  <th>Mathematics (Total Marks)</th>
+                </>
+              )}
+
               <th>Total Marks</th>
               <th>Rank</th>
             </tr>
@@ -102,14 +130,27 @@ const GetDetails = () => {
                 <td>{result.subjectMarks?.chemistry?.incorrectMark ?? "-"}</td>
                 <td>{result.subjectMarks?.chemistry?.totalMark ?? "-"}</td>
 
-                {isNeetBatch ? (
+                {isNeetBatch && !isZBatch && (
                   <>
                     <td>{result.subjectMarks?.biology?.correctMark ?? "-"}</td>
                     <td>{result.subjectMarks?.biology?.incorrectMark ?? "-"}</td>
                     <td>{result.subjectMarks?.biology?.totalMark ?? "-"}</td>
                   </>
-                ) : (
+                )}
+
+                {!isNeetBatch && !isZBatch && (
                   <>
+                    <td>{result.subjectMarks?.mathematics?.correctMark ?? "-"}</td>
+                    <td>{result.subjectMarks?.mathematics?.incorrectMark ?? "-"}</td>
+                    <td>{result.subjectMarks?.mathematics?.totalMark ?? "-"}</td>
+                  </>
+                )}
+
+                {isZBatch && (
+                  <>
+                    <td>{result.subjectMarks?.biology?.correctMark ?? "-"}</td>
+                    <td>{result.subjectMarks?.biology?.incorrectMark ?? "-"}</td>
+                    <td>{result.subjectMarks?.biology?.totalMark ?? "-"}</td>
                     <td>{result.subjectMarks?.mathematics?.correctMark ?? "-"}</td>
                     <td>{result.subjectMarks?.mathematics?.incorrectMark ?? "-"}</td>
                     <td>{result.subjectMarks?.mathematics?.totalMark ?? "-"}</td>
@@ -118,17 +159,17 @@ const GetDetails = () => {
 
                 <td>{result.totalMarks ?? "-"}</td>
                 <td>{result.rank}</td>
-
               </tr>
             ))}
           </tbody>
         </table>
       ) : (
-        <p>No results found.</p>
+        !loading && <p>No results found.</p>
       )}
     </div>
   );
 };
 
 export default GetDetails;
+
 
