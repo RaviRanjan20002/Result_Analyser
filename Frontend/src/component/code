@@ -1,0 +1,839 @@
+/* GetDetails.css */
+
+* {
+  box-sizing: border-box;
+}
+
+.get-details-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+/* Header Section */
+.header-section {
+  text-align: center;
+  margin-bottom: 3rem;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.main-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 1rem 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.title-icon {
+  font-size: 3rem;
+  animation: pulse 2s infinite;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  font-weight: 300;
+}
+
+/* Search Card */
+.search-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.search-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.search-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.search-icon {
+  font-size: 1.5rem;
+}
+
+.search-description {
+  color: #666;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.input-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.student-code-input {
+  flex: 1;
+  max-width: 300px;
+  padding: 1rem 1.5rem;
+  border: 2px solid #e1e5e9;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-family: 'Courier New', monospace;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+}
+
+.student-code-input:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.student-code-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.search-button {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 160px;
+  justify-content: center;
+}
+
+.search-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.search-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.button-icon {
+  font-size: 1.1rem;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Error Message */
+.error-message {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  animation: slideInRight 0.3s ease-out;
+}
+
+.error-icon {
+  font-size: 1.1rem;
+}
+
+/* Loading */
+.loading-container {
+  text-align: center;
+  padding: 3rem;
+  color: white;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1.5rem;
+}
+
+.loading-text {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+/* Student Info Card */
+.student-info-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.student-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.student-avatar {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatar-icon {
+  font-size: 2.5rem;
+  color: white;
+}
+
+.student-details {
+  flex: 1;
+  min-width: 200px;
+}
+
+.student-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 0.5rem 0;
+}
+
+.father-name {
+  font-size: 1.1rem;
+  color: #666;
+  margin: 0 0 0.5rem 0;
+}
+
+.batch-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.batch-label {
+  color: #666;
+  font-size: 1rem;
+}
+
+.batch-name {
+  background: #667eea;
+  color: white;
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.results-count {
+  text-align: center;
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 2px solid #e9ecef;
+}
+
+.count-number {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #667eea;
+  line-height: 1;
+}
+
+.count-label {
+  font-size: 0.9rem;
+  color: #666;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Results Section */
+.results-section {
+  animation: fadeInUp 1s ease-out;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.section-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.legend {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.legend-item.excellent { background: #d4edda; color: #155724; }
+.legend-item.good { background: #cce5ff; color: #0056b3; }
+.legend-item.average { background: #fff3cd; color: #856404; }
+.legend-item.poor { background: #f8d7da; color: #721c24; }
+
+/* Table Container */
+.table-container {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.results-table th {
+  background: #f8f9fa;
+  padding: 1rem 0.8rem;
+  text-align: center;
+  font-weight: 600;
+  border-bottom: 2px solid #dee2e6;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.results-table th.sticky-col {
+  position: sticky;
+  left: 0;
+  z-index: 11;
+  background: #667eea;
+  color: white;
+}
+
+.results-table th.physics { background: #e3f2fd; color: #1565c0; }
+.results-table th.chemistry { background: #f3e5f5; color: #7b1fa2; }
+.results-table th.biology { background: #e8f5e8; color: #2e7d32; }
+.results-table th.mathematics { background: #fff3e0; color: #ef6c00; }
+.results-table th.total-col { background: #fce4ec; color: #c2185b; }
+.results-table th.rank-col { background: #f1f8e9; color: #558b2f; }
+
+.sub-header th {
+  font-size: 0.8rem;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.result-row {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.result-row:hover {
+  background: #f8f9fa;
+}
+
+.results-table td {
+  padding: 1rem 0.8rem;
+  text-align: center;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.sticky-col {
+  position: sticky;
+  left: 0;
+  background: white;
+  border-right: 2px solid #dee2e6;
+}
+
+.test-info {
+  text-align: left;
+  min-width: 120px;
+}
+
+.test-date {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.2rem;
+}
+
+.test-type {
+  font-size: 0.8rem;
+  color: #666;
+  background: #f8f9fa;
+  padding: 0.2rem 0.5rem;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.mark-cell {
+  font-weight: 500;
+}
+
+.mark-cell.correct { color: #28a745; }
+.mark-cell.incorrect { color: #dc3545; }
+
+.mark-cell.total.excellent { background: #d4edda; color: #155724; }
+.mark-cell.total.good { background: #cce5ff; color: #0056b3; }
+.mark-cell.total.average { background: #fff3cd; color: #856404; }
+.mark-cell.total.poor { background: #f8d7da; color: #721c24; }
+
+.total-marks {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.total-score {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.total-marks.excellent .total-score { background: #28a745; color: white; }
+.total-marks.good .total-score { background: #007bff; color: white; }
+.total-marks.average .total-score { background: #ffc107; color: #212529; }
+.total-marks.poor .total-score { background: #dc3545; color: white; }
+
+.rank-cell {
+  font-weight: 600;
+}
+
+.rank-badge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 700;
+}
+
+/* No Results */
+.no-results {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.no-results-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+
+.no-results h3 {
+  font-size: 1.5rem;
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.no-results p {
+  font-size: 1rem;
+  opacity: 0.8;
+  margin: 0;
+}
+
+/* Animations */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .legend {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .get-details-container {
+    padding: 1rem;
+  }
+
+  .main-title {
+    font-size: 2rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .search-card {
+    padding: 1.5rem;
+  }
+
+  .input-container {
+    flex-direction: column;
+  }
+
+  .student-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .results-table {
+    font-size: 0.8rem;
+  }
+
+  .results-table th,
+  .results-table td {
+    padding: 0.5rem 0.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-title {
+    font-size: 1.5rem;
+  }
+
+  .search-card {
+    padding: 1rem;
+  }
+
+  .student-info-card {
+    padding: 1rem;
+  }
+
+  .results-table {
+    font-size: 0.7rem;
+  }
+}
+import React, { useState } from "react";
+import axios from "axios";
+import "../styles/GetDetails.css";
+
+const GetDetails = () => {
+  const [studentCode, setStudentCode] = useState("");
+  const [results, setResults] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const fetchResults = async () => {
+    if (!studentCode) {
+      setError("Please enter the 5-digit student code.");
+      return;
+    }
+    
+    if (studentCode.length !== 5) {
+      setError("Student code must be exactly 5 digits.");
+      return;
+    }
+
+    setError("");
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `https://result-analyserr.onrender.com/api/resultbycode?studentCode=${studentCode}`
+      );
+      setResults(response.data);
+      if (response.data.length === 0) {
+        setError("No results found for this student code.");
+      }
+    } catch (err) {
+      console.error(err);
+      setResults([]);
+      setError("No results found for this student code or server error.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      fetchResults();
+    }
+  };
+
+  const isNeetBatch =
+    results.length > 0 &&
+    ["dron", "madhav", "nakul"].includes(results[0]?.batch?.toLowerCase());
+  const subjectName = isNeetBatch ? "Biology" : "Mathematics";
+
+  const getGradeColor = (marks) => {
+    if (marks >= 80) return "excellent";
+    if (marks >= 60) return "good";
+    if (marks >= 40) return "average";
+    return "poor";
+  };
+
+  return (
+    <div className="get-details-container">
+      <div className="header-section">
+        <h1 className="main-title">
+          <span className="title-icon">🎯</span>
+          Student Result Portal
+        </h1>
+        <p className="subtitle">Search and view detailed academic performance</p>
+      </div>
+
+      <div className="search-card">
+        <div className="search-header">
+          <h2 className="search-title">
+            <span className="search-icon">🔍</span>
+            Search Your Results
+          </h2>
+          <p className="search-description">Enter your 5-digit student code to view results</p>
+        </div>
+
+        <div className="search-form">
+          <div className="input-container">
+            <input
+              type="text"
+              placeholder="Enter 5-digit Student Code"
+              value={studentCode}
+              onChange={(e) => setStudentCode(e.target.value.replace(/\D/g, '').slice(0, 5))}
+              onKeyPress={handleKeyPress}
+              className="student-code-input"
+              maxLength="5"
+              disabled={loading}
+            />
+            <button 
+              onClick={fetchResults} 
+              className={`search-button ${loading ? 'loading' : ''}`}
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <span className="spinner"></span>
+                  Searching...
+                </>
+              ) : (
+                <>
+                  <span className="button-icon">🔍</span>
+                  Search Results
+                </>
+              )}
+            </button>
+          </div>
+
+          {error && (
+            <div className="error-message">
+              <span className="error-icon">❌</span>
+              {error}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {loading && (
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p className="loading-text">Searching for results...</p>
+        </div>
+      )}
+
+      {!loading && results.length > 0 && (
+        <>
+          <div className="student-info-card">
+            <div className="student-header">
+              <div className="student-avatar">
+                <span className="avatar-icon">👨‍🎓</span>
+              </div>
+              <div className="student-details">
+                <h3 className="student-name">{results[0].name}</h3>
+                <p className="father-name">Father: {results[0].fatherName}</p>
+                <p className="batch-info">
+                  <span className="batch-label">Batch:</span> 
+                  <span className="batch-name">{results[0].batch}</span>
+                </p>
+              </div>
+              <div className="results-count">
+                <span className="count-number">{results.length}</span>
+                <span className="count-label">Test{results.length > 1 ? 's' : ''}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="results-section">
+            <div className="section-header">
+              <h2 className="section-title">📊 Academic Performance</h2>
+              <div className="legend">
+                <span className="legend-item excellent">Excellent (80+)</span>
+                <span className="legend-item good">Good (60-79)</span>
+                <span className="legend-item average">Average (40-59)</span>
+                <span className="legend-item poor">Poor (&lt;40)</span>
+              </div>
+            </div>
+
+            <div className="table-container">
+              <table className="results-table">
+                <thead>
+                  <tr>
+                    <th className="sticky-col">Test Info</th>
+                    <th className="subject-group physics">Physics</th>
+                    <th className="subject-group physics">Physics</th>
+                    <th className="subject-group physics">Physics</th>
+                    <th className="subject-group chemistry">Chemistry</th>
+                    <th className="subject-group chemistry">Chemistry</th>
+                    <th className="subject-group chemistry">Chemistry</th>
+                    <th className={`subject-group ${isNeetBatch ? 'biology' : 'mathematics'}`}>{subjectName}</th>
+                    <th className={`subject-group ${isNeetBatch ? 'biology' : 'mathematics'}`}>{subjectName}</th>
+                    <th className={`subject-group ${isNeetBatch ? 'biology' : 'mathematics'}`}>{subjectName}</th>
+                    <th className="total-col">Total</th>
+                    <th className="rank-col">Rank</th>
+                  </tr>
+                  <tr className="sub-header">
+                    <th className="sticky-col">Date & Type</th>
+                    <th className="physics">Correct</th>
+                    <th className="physics">Incorrect</th>
+                    <th className="physics">Total</th>
+                    <th className="chemistry">Correct</th>
+                    <th className="chemistry">Incorrect</th>
+                    <th className="chemistry">Total</th>
+                    <th className={isNeetBatch ? 'biology' : 'mathematics'}>Correct</th>
+                    <th className={isNeetBatch ? 'biology' : 'mathematics'}>Incorrect</th>
+                    <th className={isNeetBatch ? 'biology' : 'mathematics'}>Total</th>
+                    <th className="total-col">Marks</th>
+                    <th className="rank-col">Position</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {results.map((result, index) => (
+                    <tr key={index} className="result-row" style={{animationDelay: `${index * 0.1}s`}}>
+                      <td className="sticky-col test-info">
+                        <div className="test-date">{result.testDate}</div>
+                        <div className="test-type">{result.testType}</div>
+                      </td>
+                      
+                      <td className="mark-cell correct">{result.subjectMarks?.physics?.correctMark ?? "-"}</td>
+                      <td className="mark-cell incorrect">{result.subjectMarks?.physics?.incorrectMark ?? "-"}</td>
+                      <td className={`mark-cell total ${getGradeColor(result.subjectMarks?.physics?.totalMark || 0)}`}>
+                        {result.subjectMarks?.physics?.totalMark ?? "-"}
+                      </td>
+                      
+                      <td className="mark-cell correct">{result.subjectMarks?.chemistry?.correctMark ?? "-"}</td>
+                      <td className="mark-cell incorrect">{result.subjectMarks?.chemistry?.incorrectMark ?? "-"}</td>
+                      <td className={`mark-cell total ${getGradeColor(result.subjectMarks?.chemistry?.totalMark || 0)}`}>
+                        {result.subjectMarks?.chemistry?.totalMark ?? "-"}
+                      </td>
+
+                      {isNeetBatch ? (
+                        <>
+                          <td className="mark-cell correct">{result.subjectMarks?.biology?.correctMark ?? "-"}</td>
+                          <td className="mark-cell incorrect">{result.subjectMarks?.biology?.incorrectMark ?? "-"}</td>
+                          <td className={`mark-cell total ${getGradeColor(result.subjectMarks?.biology?.totalMark || 0)}`}>
+                            {result.subjectMarks?.biology?.totalMark ?? "-"}
+                          </td>
+                        </>
+                      ) : (
+                        <>
+                          <td className="mark-cell correct">{result.subjectMarks?.mathematics?.correctMark ?? "-"}</td>
+                          <td className="mark-cell incorrect">{result.subjectMarks?.mathematics?.incorrectMark ?? "-"}</td>
+                          <td className={`mark-cell total ${getGradeColor(result.subjectMarks?.mathematics?.totalMark || 0)}`}>
+                            {result.subjectMarks?.mathematics?.totalMark ?? "-"}
+                          </td>
+                        </>
+                      )}
+
+                      <td className={`total-marks ${getGradeColor(result.totalMarks || 0)}`}>
+                        <span className="total-score">{result.totalMarks ?? "-"}</span>
+                      </td>
+                      <td className="rank-cell">
+                        <span className="rank-badge">#{result.rank}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      )}
+
+      {!loading && results.length === 0 && !error && studentCode && (
+        <div className="no-results">
+          <div className="no-results-icon">📝</div>
+          <h3>No Results Found</h3>
+          <p>Please check your student code and try again</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default GetDetails;

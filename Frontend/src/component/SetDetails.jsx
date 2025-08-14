@@ -406,3 +406,144 @@ const SetDetails = () => {
 };
 
 export default SetDetails;
+
+//          <div className="subject-section">
+//   <table className="marks-table">
+//     <thead>
+//       <tr>
+//         <th>Subject</th>
+//         <th>Correct Marks</th>
+//         <th>Incorrect Marks</th>
+//         <th>Obtained Marks</th>
+//         <th>Total Marks</th>
+//       </tr>
+//     </thead>
+//     <tbody>
+//       {/* Physics & Chemistry always */}
+//       {["physics", "chemistry"].map((subject) => (
+//         <tr key={subject}>
+//           <td className="subject-name">{subject.toUpperCase()}</td>
+//           {["correctMark", "incorrectMark", "obtainedMark", "totalMark"].map(
+//             (type) => (
+//               <td key={type}>
+//                 <input
+//                   type="number"
+//                   placeholder={
+//                     type === "correctMark"
+//                       ? "Correct"
+//                       : type === "incorrectMark"
+//                       ? "Incorrect"
+//                       : type === "obtainedMark"
+//                       ? "Obtained"
+//                       : "Total"
+//                   }
+//                   value={formData.subjectMarks[subject][type] || ""}
+//                   onChange={(e) =>
+//                     handleSubjectChange(subject, type, e.target.value)
+//                   }
+//                   className="marks-input"
+//                   min={0}
+//                   required
+//                 />
+//               </td>
+//             )
+//           )}
+//         </tr>
+//       ))}
+
+//       {/* Conditional Subjects */}
+//       {formData.testType === "neet" ||
+//       formData.testType === "neettough" ||
+//       formData.testType === "neetmoderate" ? (
+//         <tr>
+//           <td className="subject-name">BIOLOGY</td>
+//           {["correctMark", "incorrectMark", "obtainedMark", "totalMark"].map(
+//             (type) => (
+//               <td key={type}>
+//                 <input
+//                   type="number"
+//                   placeholder={
+//                     type === "correctMark"
+//                       ? "Correct"
+//                       : type === "incorrectMark"
+//                       ? "Incorrect"
+//                       : type === "obtainedMark"
+//                       ? "Obtained"
+//                       : "Total"
+//                   }
+//                   value={formData.subjectMarks.biology[type] || ""}
+//                   onChange={(e) =>
+//                     handleSubjectChange("biology", type, e.target.value)
+//                   }
+//                   className="marks-input"
+//                   min={0}
+//                   required
+//                 />
+//               </td>
+//             )
+//           )}
+//         </tr>
+//       ) : formData.testType === "other" || studentInfo?.batch === "Z" ? (
+//         ["mathematics", "biology"].map((subject) => (
+//           <tr key={subject}>
+//             <td className="subject-name">{subject.toUpperCase()}</td>
+//             {["correctMark", "incorrectMark", "obtainedMark", "totalMark"].map(
+//               (type) => (
+//                 <td key={type}>
+//                   <input
+//                     type="number"
+//                     placeholder={
+//                       type === "correctMark"
+//                         ? "Correct"
+//                         : type === "incorrectMark"
+//                         ? "Incorrect"
+//                         : type === "obtainedMark"
+//                         ? "Obtained"
+//                         : "Total"
+//                     }
+//                     value={formData.subjectMarks[subject][type] || ""}
+//                     onChange={(e) =>
+//                       handleSubjectChange(subject, type, e.target.value)
+//                     }
+//                     className="marks-input"
+//                     min={0}
+//                     required
+//                   />
+//                 </td>
+//               )
+//             )}
+//           </tr>
+//         ))
+//       ) : (
+//         <tr>
+//           <td className="subject-name">MATHEMATICS</td>
+//           {["correctMark", "incorrectMark", "obtainedMark", "totalMark"].map(
+//             (type) => (
+//               <td key={type}>
+//                 <input
+//                   type="number"
+//                   placeholder={
+//                     type === "correctMark"
+//                       ? "Correct"
+//                       : type === "incorrectMark"
+//                       ? "Incorrect"
+//                       : type === "obtainedMark"
+//                       ? "Obtained"
+//                       : "Total"
+//                   }
+//                   value={formData.subjectMarks.mathematics[type] || ""}
+//                   onChange={(e) =>
+//                     handleSubjectChange("mathematics", type, e.target.value)
+//                   }
+//                   className="marks-input"
+//                   min={0}
+//                   required
+//                 />
+//               </td>
+//             )
+//           )}
+//         </tr>
+//       )}
+//     </tbody>
+//   </table>
+// </div>

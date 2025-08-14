@@ -446,3 +446,41 @@ input::placeholder {
     gap: 13px;
   }
 }
+/* .marks-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.marks-table th,
+.marks-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.marks-table th {
+  background: black;
+  font-weight: bold;
+}
+
+.subject-name {
+  text-align: left;
+  font-weight: bold;
+}
+
+.marks-input {
+  width: 80px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.marks-input:focus {
+  outline: none;
+  border-color: #007bff;
+} */

@@ -155,9 +155,9 @@ const RegisterStudent = () => {
         </button>
       </form>
 
-      {/* <button className="view-btn" onClick={() => navigate("/view-registered")}>
+      <button className="view-btn" onClick={() => navigate("/view-registered")}>
         📋 View Registered Students
-      </button> */}
+      </button>
 
       {studentCode && (
         <div className="info-box">
