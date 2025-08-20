@@ -173,3 +173,250 @@ const GetDetails = () => {
 export default GetDetails;
 
 
+// import React, { useState } from "react";
+// import { FaGreaterThan } from "react-icons/fa6";
+// import axios from "axios";
+// import "../styles/GetDetails.css";
+// import Teachers from "../assets/Teachers.png"; // Adjust the path as needed
+// import trophy from "../assets/trophy.png"; // Adjust the path as needed
+// const GetDetails = () => {
+//   const [studentCode, setStudentCode] = useState("");
+//   const [step, setStep] = useState(1); // 1 = enter code, 2 = select test, 3 = view result
+//   const [tests, setTests] = useState([]);
+//   const [selectedTest, setSelectedTest] = useState(null);
+//   const [error, setError] = useState("");
+//   const [loading, setLoading] = useState(false);
+
+//   // 🔹 Step 1: Fetch all tests for student
+//   const handleCodeSubmit = async (e) => {
+//     e.preventDefault();
+//     if (!studentCode) return;
+
+//     setLoading(true);
+//     setError("");
+//     try {
+//       const res = await axios.get(
+//         `http://localhost:3001/api/resultbycode?studentCode=${studentCode}`
+//       );
+
+//       if (res.data.length === 0) {
+//         setError("No results found for this student code.");
+//         setTests([]);
+//         return;
+//       }
+
+//       // store list of tests
+//       setTests(res.data);
+//       setStep(2);
+//     } catch (err) {
+//       console.error(err);
+//       setError("Something went wrong fetching results.");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   // 🔹 Step 2: Select a test and show result
+//   const handleViewResult = (test) => {
+//     setSelectedTest(test);
+//     setStep(3);
+//   };
+
+//   return (
+//     <div className="viewresult-bg">
+//       <div className="viewresult-container">
+//         {/* STEP 1: Enter Student Code */}
+// {step === 1 && (
+//   <div className="step1-container">
+//     <div className="viewresult-card">
+//       <div className="viewresult-header">Enter Student Code To View Result</div>
+
+//       <form onSubmit={handleCodeSubmit} className="viewresult-form">
+//         <label className="form-label">Student Code</label>
+//         <input
+//           type="text"
+//           value={studentCode}
+//           onChange={(e) => setStudentCode(e.target.value)}
+//           placeholder="Enter Code"
+//           required
+//         />
+//         <div className="form-note">
+//           {/* Note: Enter the 5-digit student code to view results. */}
+//           <button type="submit">
+//           <span className="button-text"> {loading ? "Searching..." : "View Result"} </span>
+//           <span><FaGreaterThan className="arrow" /></span> 
+//         </button>
+//         </div>
+        
+//       </form>
+
+//       {error && <p className="error-message">{error}</p>}
+//     </div>
+
+//     {/* put image INSIDE container */}
+//     <div className="teachers-img-container">
+//       <img className="teachers-img" src={Teachers} alt="Teachers" />
+//     </div>
+//   </div>
+// )}
+
+
+
+
+//         {/* STEP 2: Select Test */}
+//         {step === 2 && (
+//   <div className="step2-container">
+//     <div className="step2-card">
+//       <div className="step2-header">Select Test To View Result</div>
+
+//       <table className="step2-table">  
+//         <thead>
+//           <tr>
+//             <th>Test Date</th>
+//             <th>Test Pattern</th>
+//             <th></th>
+//           </tr>
+//         </thead>
+//         <tbody>
+//           {tests.map((t, idx) => (
+//             <tr key={idx}>
+//               <td>{t.testDate}</td>
+//               <td>{t.testType}</td>
+//               <td>
+//                 <button
+//                   className="step2-btn"
+//                   onClick={() => handleViewResult(t)}
+//                 >
+//                   View Result <span className="arrow">➜</span>
+//                 </button>
+//               </td>
+//             </tr>
+//           ))}
+//         </tbody>
+//       </table>
+//     </div>
+//   </div>
+// )}
+
+
+//         {/* STEP 3: Show Result */}
+// {step === 3 && selectedTest && (
+//   <div className="step3-container">
+//     {/* Left: Result Card */}
+//     <div className="step3-card">
+//       <div className="step3-header">STUDENT RESULT PORTAL
+//            <button
+//           className="back-btn"
+//           onClick={() => {
+//             setStep(2);       // go back to step 2
+//             setSelectedTest(null); // clear current test
+//           }}
+//         >
+//           ⬅ Back
+//         </button>
+//       </div>
+
+//       {/* Student Info */}
+//       <div className="step3-info">
+//         <div>
+//           <div className="label">Test Date</div>
+//           <div className="getinfo-box">{selectedTest.testDate}</div>
+//         </div>
+//         <div>
+//           <div className="label">Student Code</div>
+//           <div className="getinfo-box">{selectedTest.studentCode}</div>
+//         </div>
+//         <div>
+//           <div className="label">Test Pattern</div>
+//           <div className="getinfo-box">{selectedTest.testType}</div>
+//         </div>
+//         <div>
+//           <div className="label">Name</div>
+//           <div className="getinfo-box">{selectedTest.name}</div>
+//         </div>
+//         <div>
+//           <div className="label">Father's Name</div>
+//           <div className="getinfo-box">{selectedTest.fatherName}</div>
+//         </div>
+//         <div>
+//           <div className="label">Batch</div>
+//           <div className="getinfo-box">{selectedTest.batch}</div>
+//         </div>
+
+//         <div className="rank-box">
+//           Rank : <span>{selectedTest.rank}</span>
+//         </div>
+//       </div>
+
+//       {/* Marks Table */}
+// {/* Marks Table */}
+// <table className="step3-table">
+//   <thead>
+//     <tr>
+//       <th>Subject</th>
+//       <th>Total Marks</th>
+//       <th>Positive Marks</th>
+//       <th>Negative Marks</th>
+//       <th>Obtained Marks</th>
+//     </tr>
+//   </thead>
+//   <tbody>
+//     {selectedTest.subjectMarks &&
+//       Object.entries(selectedTest.subjectMarks).map(([sub, marks]) => (
+//         <tr key={sub}>
+//           <td style={{color:"black", fontWeight:"bolder",textTransform:"capitalize",fontSize:"18px"}}>{sub}</td>
+//           <td><div className="cell-box">{marks.obtainedMark ?? "-"}</div></td>
+//           <td><div className="cell-box">{marks.correctMark ?? "-"}</div></td>
+//           <td><div className="cell-box">{marks.incorrectMark ?? "-"}</div></td>
+//           <td><div className="cell-box">{marks.totalMark ?? "-"}</div></td>
+//         </tr>
+//       ))}
+//   </tbody>
+// </table>
+
+
+//       {/* Summary */}
+//       <div className="step3-summary">
+//         <div className="getinfo-box btext ">Maximum Marks : <b> {selectedTest.maxMarks ?? "-"}</b></div>
+//         <div className="getinfo-box btext ">Obtained Marks : <b>{selectedTest.totalMarks ?? "-"}</b></div>
+//       </div>
+//     </div>
+
+//     {/* Right: Trophy Section */}
+// <div className="step3-trophy">
+
+
+//   {/* Gold - Rank 1 */}
+// <div className="trophy-wrapper">
+//   <img src={trophy} alt="Trophy" className="trophy-image" />
+
+//   <div className="trophy-names">
+//     <div className="name silver">{selectedTest.top3?.[1]?.name ?? "-"}</div>
+//     <div className="name gold">{selectedTest.top3?.[0]?.name ?? "-"}</div>
+//     <div className="name bronze">{selectedTest.top3?.[2]?.name ?? "-"}</div>
+//   </div>
+// </div>
+
+
+//   {/* Bronze - Rank 3 */}
+//   {/* <div className="trophy bronze">
+//     <img src={trophy} alt="Bronze" />
+//     <div className="trophy-name">{selectedTest.top3?.[2]?.name ?? "-"}</div>
+//   </div> */}
+// </div>
+
+//   </div>
+// )}
+
+
+
+//       </div>
+
+//     </div>
+//   );
+// };
+
+// export default GetDetails;
+
+
+

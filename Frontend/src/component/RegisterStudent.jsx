@@ -150,7 +150,7 @@ const RegisterStudent = () => {
           onChange={handleChange}
           required
         />
-        <button type="submit" disabled={loading}>
+        <button className="reg-btn" type="submit" disabled={loading}>
           {loading ? <span className="spinner"></span> : "Generate Student Code"}
         </button>
       </form>

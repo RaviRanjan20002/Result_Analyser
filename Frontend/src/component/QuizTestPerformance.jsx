@@ -261,20 +261,29 @@ const QuizTestPerformance = () => {
   
   const subjectName = isNeetBatch ? "Biology" : "Mathematics";
   console.log("subjectName", subjectName);
-  if (!isAuthorized) {
+   if (!isAuthorized) {
     return (
-      <div className="Setcontainer">
-        <h2>👁️ FOR OFFICE USE ONLY</h2>
-        <input
-          ref={passwordInputRef}
-          type="password"
-          placeholder="Enter Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button className="passwordbttn" onClick={handlePasswordSubmit}>
-          Submit
-        </button>
+      <div className="set-auth-bg">
+        <form
+          className="set-auth-card"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handlePasswordSubmit();
+          }}
+        >
+          <h2>🔐 Admin Access</h2>
+          <input
+            ref={passwordInputRef}
+            type="password"
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="inputcl"
+          />
+          <button className="primary-btn" type="submit">
+            Login
+          </button>
+        </form>
       </div>
     );
   }

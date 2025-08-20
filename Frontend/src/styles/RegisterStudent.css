@@ -38,7 +38,7 @@ select:focus {
   outline: none;
 }
 
-button[type="submit"] {
+.reg-btn {
   background-color: #007bff;
   color: white;
   font-weight: bold;
@@ -50,11 +50,11 @@ button[type="submit"] {
   transition: background-color 0.2s ease;
 }
 
-button[type="submit"]:hover {
+.reg-btn:hover {
   background-color: #0056b3;
 }
 
-button[type="submit"]:disabled {
+.reg-btn:disabled {
   background-color: #6c757d;
   cursor: not-allowed;
 }

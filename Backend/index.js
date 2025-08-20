@@ -41,6 +41,23 @@ const batchSchema = new mongoose.Schema({
 const Batch = mongoose.model('Batch', batchSchema);
 
 // Define Mongoose Schema
+// const resultSchema = new mongoose.Schema({
+//   testDate: String,
+//   name: String,
+//   fatherName: String,
+//   batch: String,
+//   testType: String,
+//   studentCode: String,
+//   subjectMarks: {
+//     physics: { correctMark: Number, incorrectMark: Number, totalMark: Number },
+//     chemistry: { correctMark: Number, incorrectMark: Number, totalMark: Number },
+//     biology: { correctMark: Number, incorrectMark: Number, totalMark: Number },
+//     mathematics: { correctMark: Number, incorrectMark: Number, totalMark: Number },
+//   },
+//   totalMarks: Number,
+// });
+
+// const Result = mongoose.model("Result", resultSchema);
 const resultSchema = new mongoose.Schema({
   testDate: String,
   name: String,
@@ -49,16 +66,34 @@ const resultSchema = new mongoose.Schema({
   testType: String,
   studentCode: String,
   subjectMarks: {
-    physics: { correctMark: Number, incorrectMark: Number, totalMark: Number },
-    chemistry: { correctMark: Number, incorrectMark: Number, totalMark: Number },
-    biology: { correctMark: Number, incorrectMark: Number, totalMark: Number },
-    mathematics: { correctMark: Number, incorrectMark: Number, totalMark: Number },
+    physics: {
+      totalMark: Number,
+      correctMark: Number,
+      incorrectMark: Number,
+      obtainedMark: Number
+    },
+    chemistry: {
+      totalMark: Number,
+      correctMark: Number,
+      incorrectMark: Number,
+      obtainedMark: Number
+    },
+    biology: {
+      totalMark: Number,
+      correctMark: Number,
+      incorrectMark: Number,
+      obtainedMark: Number
+    },
+    mathematics: {
+      totalMark: Number,
+      correctMark: Number,
+      incorrectMark: Number,
+      obtainedMark: Number
+    },
   },
-  totalMarks: Number,
+  totalMarks: Number, // sum of obtained marks
 });
-
-const Result = mongoose.model("Result", resultSchema);
-//for adding batch
+const Result = mongoose.model("Result", resultSchema);  
 
  
 app.get("/", (req, res) => {
@@ -119,6 +154,91 @@ app.post("/api/batches/add", async (req, res) => {
     res.status(500).json({ message: "Error adding batch", error: error.message });
   }
 });
+app.post("/api/results", async (req, res) => {
+  try {
+    let { name, fatherName, testType, testDate, subjectMarks, batch } = req.body;
+
+    // Normalize names
+    const normalizedName = name.trim().toLowerCase();
+    const normalizedFatherName = fatherName.trim().toLowerCase();
+    const formattedName = toTitleCase(name.trim());
+    const formattedFatherName = toTitleCase(fatherName.trim());
+    const testDateFormatted = testDate;
+
+    // Ensure obtainedMark is calculated
+    Object.keys(subjectMarks).forEach(sub => {
+      if (subjectMarks[sub]) {
+        subjectMarks[sub].obtainedMark =
+          (subjectMarks[sub].correctMark || 0) -
+          (subjectMarks[sub].incorrectMark || 0);
+      }
+    });
+
+    // Calculate totalMarks = sum of obtainedMark
+    let totalMarks = 0;
+    if (["dron", "madhav", "nakul"].includes(batch.toLowerCase())) {
+      totalMarks =
+        (subjectMarks.physics?.obtainedMark || 0) +
+        (subjectMarks.chemistry?.obtainedMark || 0) +
+        (subjectMarks.biology?.obtainedMark || 0);
+    } else if (batch.toLowerCase() === "z") {
+      totalMarks =
+        (subjectMarks.physics?.obtainedMark || 0) +
+        (subjectMarks.chemistry?.obtainedMark || 0) +
+        (subjectMarks.mathematics?.obtainedMark || 0) +
+        (subjectMarks.biology?.obtainedMark || 0);
+    } else {
+      totalMarks =
+        (subjectMarks.physics?.obtainedMark || 0) +
+        (subjectMarks.chemistry?.obtainedMark || 0) +
+        (subjectMarks.mathematics?.obtainedMark || 0);
+    }
+
+    // Duplicate check
+    const duplicate = await Result.findOne({
+      name: { $regex: `^${normalizedName}$`, $options: 'i' },
+      fatherName: { $regex: `^${normalizedFatherName}$`, $options: 'i' },
+      testType,
+      testDate: testDateFormatted,
+    });
+
+    if (duplicate) {
+      return res.status(409).json({ message: "⚠️ Result already exists for this test." });
+    }
+
+    // Reuse or generate studentCode
+    const existing = await Result.findOne({
+      name: { $regex: `^${normalizedName}$`, $options: 'i' },
+      fatherName: { $regex: `^${normalizedFatherName}$`, $options: 'i' },
+    });
+    let studentCode = existing?.studentCode || Math.floor(10000 + Math.random() * 90000).toString();
+
+    // Save result
+    const result = new Result({
+      name: formattedName,
+      fatherName: formattedFatherName,
+      batch,
+      testType,
+      testDate: testDateFormatted,
+      subjectMarks:
+        ["dron", "madhav", "nakul"].includes(batch.toLowerCase())
+          ? { physics: subjectMarks.physics, chemistry: subjectMarks.chemistry, biology: subjectMarks.biology }
+          : batch.toLowerCase() === "z"
+          ? { physics: subjectMarks.physics, chemistry: subjectMarks.chemistry, mathematics: subjectMarks.mathematics, biology: subjectMarks.biology }
+          : { physics: subjectMarks.physics, chemistry: subjectMarks.chemistry, mathematics: subjectMarks.mathematics },
+      totalMarks,
+      studentCode,
+    });
+
+    await result.save();
+    res.status(201).json({ message: "✅ Result saved successfully!", studentCode });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 // // ✅ API to Add Student Test Details
 // app.post("/api/results", async (req, res) => {
 //   try {
@@ -239,126 +359,126 @@ app.post("/api/batches/add", async (req, res) => {
 //     res.status(500).json({ error: err.message });
 //   }
 // });
-app.post("/api/results", async (req, res) => {
-  try {
-    let { name, fatherName, testType, testDate, subjectMarks, batch } = req.body;
+// app.post("/api/results", async (req, res) => {
+//   try {
+//     let { name, fatherName, testType, testDate, subjectMarks, batch } = req.body;
 
-    // Normalize for matching
-    const normalizedName = name.trim().toLowerCase();
-    const normalizedFatherName = fatherName.trim().toLowerCase();
+//     // Normalize for matching
+//     const normalizedName = name.trim().toLowerCase();
+//     const normalizedFatherName = fatherName.trim().toLowerCase();
 
-    // Format for storing (capitalize first letter of each word)
-    const formattedName = toTitleCase(name.trim());
-    const formattedFatherName = toTitleCase(fatherName.trim());
+//     // Format for storing (capitalize first letter of each word)
+//     const formattedName = toTitleCase(name.trim());
+//     const formattedFatherName = toTitleCase(fatherName.trim());
 
-    const testDateFormatted = testDate; // already in correct format
+//     const testDateFormatted = testDate; // already in correct format
 
-    // let totalMarks = 0;
+//     // let totalMarks = 0;
 
-    // // Calculate total marks
-    // if (["dron", "madhav", "nakul"].includes(batch.toLowerCase())) {
-    //   totalMarks =
-    //     subjectMarks.physics.totalMark +
-    //     subjectMarks.chemistry.totalMark +
-    //     subjectMarks.biology.totalMark;
-    // } else {
-    //   totalMarks =
-    //     subjectMarks.physics.totalMark +
-    //     subjectMarks.chemistry.totalMark +
-    //     subjectMarks.mathematics.totalMark;
-    // }
-let totalMarks = 0;
+//     // // Calculate total marks
+//     // if (["dron", "madhav", "nakul"].includes(batch.toLowerCase())) {
+//     //   totalMarks =
+//     //     subjectMarks.physics.totalMark +
+//     //     subjectMarks.chemistry.totalMark +
+//     //     subjectMarks.biology.totalMark;
+//     // } else {
+//     //   totalMarks =
+//     //     subjectMarks.physics.totalMark +
+//     //     subjectMarks.chemistry.totalMark +
+//     //     subjectMarks.mathematics.totalMark;
+//     // }
+// let totalMarks = 0;
 
-if (["dron", "madhav", "nakul"].includes(batch.toLowerCase())) {
-  totalMarks =
-    subjectMarks.physics.totalMark +
-    subjectMarks.chemistry.totalMark +
-    subjectMarks.biology.totalMark;
-} else if (batch.toLowerCase() === "z") {
-  totalMarks =
-    subjectMarks.physics.totalMark +
-    subjectMarks.chemistry.totalMark +
-    subjectMarks.mathematics.totalMark +
-    subjectMarks.biology.totalMark;
-} else {
-  totalMarks =
-    subjectMarks.physics.totalMark +
-    subjectMarks.chemistry.totalMark +
-    subjectMarks.mathematics.totalMark;
-}
+// if (["dron", "madhav", "nakul"].includes(batch.toLowerCase())) {
+//   totalMarks =
+//     subjectMarks.physics.totalMark +
+//     subjectMarks.chemistry.totalMark +
+//     subjectMarks.biology.totalMark;
+// } else if (batch.toLowerCase() === "z") {
+//   totalMarks =
+//     subjectMarks.physics.totalMark +
+//     subjectMarks.chemistry.totalMark +
+//     subjectMarks.mathematics.totalMark +
+//     subjectMarks.biology.totalMark;
+// } else {
+//   totalMarks =
+//     subjectMarks.physics.totalMark +
+//     subjectMarks.chemistry.totalMark +
+//     subjectMarks.mathematics.totalMark;
+// }
 
-    // Case-insensitive duplicate check
-    const duplicate = await Result.findOne({
-      name: { $regex: `^${normalizedName}$`, $options: 'i' },
-      fatherName: { $regex: `^${normalizedFatherName}$`, $options: 'i' },
-      testType,
-      testDate: testDateFormatted,
-    });
+//     // Case-insensitive duplicate check
+//     const duplicate = await Result.findOne({
+//       name: { $regex: `^${normalizedName}$`, $options: 'i' },
+//       fatherName: { $regex: `^${normalizedFatherName}$`, $options: 'i' },
+//       testType,
+//       testDate: testDateFormatted,
+//     });
 
-    if (duplicate) {
-      return res.status(409).json({ message: "⚠️ Result already exists for this test." });
-    }
+//     if (duplicate) {
+//       return res.status(409).json({ message: "⚠️ Result already exists for this test." });
+//     }
 
-    // Reuse studentCode if student exists (case-insensitive)
-    const existing = await Result.findOne({
-      name: { $regex: `^${normalizedName}$`, $options: 'i' },
-      fatherName: { $regex: `^${normalizedFatherName}$`, $options: 'i' },
-    });
+//     // Reuse studentCode if student exists (case-insensitive)
+//     const existing = await Result.findOne({
+//       name: { $regex: `^${normalizedName}$`, $options: 'i' },
+//       fatherName: { $regex: `^${normalizedFatherName}$`, $options: 'i' },
+//     });
 
-    let studentCode = existing?.studentCode;
+//     let studentCode = existing?.studentCode;
 
-    if (!studentCode) {
-      studentCode = Math.floor(10000 + Math.random() * 90000).toString();
-    }
+//     if (!studentCode) {
+//       studentCode = Math.floor(10000 + Math.random() * 90000).toString();
+//     }
 
-    // Create new result
-    const result = new Result({
-      name: formattedName,
-      fatherName: formattedFatherName,
-      batch,
-      testType,
-      testDate: testDateFormatted,
-      // subjectMarks:
-      //   ["dron", "madhav", "nakul"].includes(batch.toLowerCase())
-      //     ? {
-      //         physics: subjectMarks.physics,
-      //         chemistry: subjectMarks.chemistry,
-      //         biology: subjectMarks.biology,
-      //       }
-      //     : {
-      //         physics: subjectMarks.physics,
-      //         chemistry: subjectMarks.chemistry,
-      //         mathematics: subjectMarks.mathematics,
-      //       },
-      subjectMarks:
-  ["dron", "madhav", "nakul"].includes(batch.toLowerCase())
-    ? {
-        physics: subjectMarks.physics,
-        chemistry: subjectMarks.chemistry,
-        biology: subjectMarks.biology,
-      }
-    : batch.toLowerCase() === "z"
-    ? {
-        physics: subjectMarks.physics,
-        chemistry: subjectMarks.chemistry,
-        mathematics: subjectMarks.mathematics,
-        biology: subjectMarks.biology,
-      }
-    : {
-        physics: subjectMarks.physics,
-        chemistry: subjectMarks.chemistry,
-        mathematics: subjectMarks.mathematics,
-      },
-      totalMarks,
-      studentCode,
-    });
+//     // Create new result
+//     const result = new Result({
+//       name: formattedName,
+//       fatherName: formattedFatherName,
+//       batch,
+//       testType,
+//       testDate: testDateFormatted,
+//       // subjectMarks:
+//       //   ["dron", "madhav", "nakul"].includes(batch.toLowerCase())
+//       //     ? {
+//       //         physics: subjectMarks.physics,
+//       //         chemistry: subjectMarks.chemistry,
+//       //         biology: subjectMarks.biology,
+//       //       }
+//       //     : {
+//       //         physics: subjectMarks.physics,
+//       //         chemistry: subjectMarks.chemistry,
+//       //         mathematics: subjectMarks.mathematics,
+//       //       },
+//       subjectMarks:
+//   ["dron", "madhav", "nakul"].includes(batch.toLowerCase())
+//     ? {
+//         physics: subjectMarks.physics,
+//         chemistry: subjectMarks.chemistry,
+//         biology: subjectMarks.biology,
+//       }
+//     : batch.toLowerCase() === "z"
+//     ? {
+//         physics: subjectMarks.physics,
+//         chemistry: subjectMarks.chemistry,
+//         mathematics: subjectMarks.mathematics,
+//         biology: subjectMarks.biology,
+//       }
+//     : {
+//         physics: subjectMarks.physics,
+//         chemistry: subjectMarks.chemistry,
+//         mathematics: subjectMarks.mathematics,
+//       },
+//       totalMarks,
+//       studentCode,
+//     });
 
-    await result.save();
-    res.status(201).json({ message: "✅ Result saved successfully!", studentCode });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+//     await result.save();
+//     res.status(201).json({ message: "✅ Result saved successfully!", studentCode });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
 
 // Helper: Capitalize first letter of each word
 function toTitleCase(str) {
@@ -484,6 +604,60 @@ app.get('/api/studentCodes/by-date', async (req, res) => {
   }
 });
 
+// app.get("/api/resultbycode", async (req, res) => {
+//   try {
+//     const { studentCode } = req.query;
+
+//     if (!studentCode || studentCode.length !== 5) {
+//       return res
+//         .status(400)
+//         .json({ message: "Please provide a valid 5-digit student code." });
+//     }
+
+//     const studentResults = await Result.find({ studentCode }).sort({ testDate: -1 });
+
+//     if (studentResults.length === 0) {
+//       return res.status(404).json({ message: "No results found for this code." });
+//     }
+
+//     const resultsWithRank = await Promise.all(
+//       studentResults.map(async (studentResult) => {
+//         const { batch, testType, testDate } = studentResult;
+
+//         // Fetch all results for same test
+//         const sameTestResults = await Result.find({
+//           batch,
+//           testType,
+//           testDate,
+//         });
+
+//         // Sort them by totalMarks descending
+//         sameTestResults.sort((a, b) => (b.totalMarks || 0) - (a.totalMarks || 0));
+
+//         // Assign ranks
+//         const rankMap = {};
+//         let rankCounter = 1;
+//         sameTestResults.forEach((r) => {
+//           if (!(r.totalMarks in rankMap)) {
+//             rankMap[r.totalMarks] = rankCounter++;
+//           }
+//         });
+
+//         const rank = rankMap[studentResult.totalMarks] || "-";
+
+//         return {
+//           ...studentResult.toObject(),
+//           rank,
+//         };
+//       })
+//     );
+
+//     res.status(200).json(resultsWithRank);
+//   } catch (err) {
+//     console.error("Error fetching result by code:", err);
+//     res.status(500).json({ error: "Internal server error." });
+//   }
+// });
 app.get("/api/resultbycode", async (req, res) => {
   try {
     const { studentCode } = req.query;
@@ -525,9 +699,18 @@ app.get("/api/resultbycode", async (req, res) => {
 
         const rank = rankMap[studentResult.totalMarks] || "-";
 
+        // ✅ Top 3 students
+        const top3 = sameTestResults.slice(0, 3).map((s, i) => ({
+          name: s.name,
+          studentCode: s.studentCode,
+          rank: i + 1,
+          totalMarks: s.totalMarks,
+        }));
+
         return {
           ...studentResult.toObject(),
           rank,
+          top3, // add top3
         };
       })
     );

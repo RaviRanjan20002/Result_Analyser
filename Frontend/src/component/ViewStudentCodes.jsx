@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { FaArrowRight } from "react-icons/fa";
 import "../styles/ViewStudentCodes.css";
 
 const ViewStudentCodes = () => {
@@ -111,7 +112,7 @@ const ViewStudentCodes = () => {
           <h3>Students in Batch: {displayedBatch}</h3>
 
           <div className="table-wrapper">
-            <table>      
+            <table className="student-table">      
             <caption>📋 Student Details</caption>
               <thead>
                 <tr>
