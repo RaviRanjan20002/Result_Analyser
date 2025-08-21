@@ -869,6 +869,32 @@ app.get("/api/results/batch/:batch", async (req, res) => {
 });
 
 
+// ✅ API to get unique test dates by batch & testType
+app.get("/api/testdates", async (req, res) => {
+  try {
+    const { batch, testType } = req.query;
+
+    if (!batch || !testType) {
+      return res
+        .status(400)
+        .json({ error: "Batch and testType are required." });
+    }
+
+    // Find all matching documents and return only testDate field
+    const dates = await Result.distinct("testDate", {
+      batch: batch,
+      testType: testType,
+    });
+
+    // Sort dates in ascending order
+    const sortedDates = dates.sort((a, b) => new Date(a) - new Date(b));
+
+    res.json(sortedDates);
+  } catch (err) {
+    console.error("Error fetching test dates:", err);
+    res.status(500).json({ error: "Server error while fetching test dates." });
+  }
+});
 
 
 

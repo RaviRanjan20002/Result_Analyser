@@ -1,5 +1,4 @@
-
-/* Ravi */
+/* 
 .batch-results-container {
   display: flex;
   flex-direction: column;
@@ -45,7 +44,7 @@
   outline: none;
 }
 .inputclass {
-  appearance: auto; /* Allow native date picker */
+  appearance: auto; 
   -webkit-appearance: none;
   -moz-appearance: none;
   width: 88%;
@@ -203,7 +202,7 @@ input[type="date"] {
 
   .results-table table {
     width: 100%;
-    min-width: 600px; /* allow horizontal scroll if needed */
+    min-width: 600px; 
   }
 
   .results-table th,
@@ -242,7 +241,7 @@ input[type="date"] {
     -moz-appearance: auto;
   }  
 }
-/* --- Filters Container --- */
+
 .filters-container {
   display: flex;
   flex-wrap: wrap;
@@ -257,12 +256,11 @@ input[type="date"] {
 }
 
 .filter-item {
-  flex: 1 1 200px; /* Flex properties for responsive layout */
+  flex: 1 1 200px; 
   min-width: 200px;
   max-width: 240px;
 }
 
-/* --- Select & Input Styling --- */
 .filter-select,
 .filter-input {
   width: 100%;
@@ -276,11 +274,11 @@ input[type="date"] {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  -webkit-appearance: none; /* Removes default OS styling */
+  -webkit-appearance: none; 
   appearance: none;
 }
 
-/* Custom Arrow for Select */
+
 .filter-select {
   background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%2394a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
   background-repeat: no-repeat;
@@ -300,7 +298,7 @@ input[type="date"] {
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
-/* Native date picker icon styling */
+
 .filter-input[type="date"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
   opacity: 0.6;
@@ -311,7 +309,7 @@ input[type="date"] {
   opacity: 1;
 }
 
-/* --- Button Styling --- */
+
 .filter-button {
   padding: 10px 34px;
   font-size: 1rem;
@@ -335,7 +333,7 @@ input[type="date"] {
   box-shadow: 0 2px 5px rgba(79, 70, 229, 0.2);
 }
 
-/* --- Responsive Adjustments --- */
+
 @media (max-width: 980px) {
   .filters-container {
     flex-direction: column;
@@ -399,5 +397,332 @@ input[type="date"] {
     width: 100%;
     max-width: 280px;
   }
+} */
+
+.viewresult-container-batch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 20px;
+  /* Light background for contrast */
 }
+.step1-container-batch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+}
+
+/* Card */
+.viewresult-card-batch {
+  width: 450px;
+  background: #d5d5d5;
+  border-radius: 6px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.28);
+  overflow: hidden;
+  margin-top: 2rem;
+}
+
+.viewresult-header-batch {
+  background-color: #0a6ca6;
+  color: #fff;
+  font-weight: 700;
+  font-size: 20px;
+  padding: 14px 12px;
+}
+
+.viewresult-form-batch {
+  padding: 26px 36px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+}
+.form-label-batch {
+  font-weight: 600;
+  font-size: 18px;
+  color:rgb(7, 7, 7)
+}
+
+/* Input like screenshot */
+.viewresult-form-batch input {
+  width: 200px;
+  height: 48px;
+  padding: 10px 12px;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-align: center;
+  border: 2px solid #000;
+  border-radius: 4px;
+  outline: none;
+  color: #131313;
+}
+.form-note-batch {
+  border: 2px solid orange;
+  border-radius: 25px;
+}
+/* Keep your existing orange button */
+.viewresult-form-batch button {
+  background-color: orange;
+  border: 2px solid white;
+  width: 170px;
+  color: black;
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  text-align: center;
+  gap:4px;
+}
+.viewresult-form-batch button:hover { background-color: #ffb84d; }
+.button-text-batch {
+ margin-left: 25px;
+}
+.arrow-batch { 
+color: #fff; 
+text-align: center;
+align-items: center;
+margin-left:16px;
+}
+
+
+.teachers-img-container-batch {
+  width: 500px;
+  margin-top: -6px;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.teachers-img-batch {
+  width: 110%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  position: relative;
+  top: -10rem;
+  pointer-events: none;
+}
+
+/* Step 2 */
+.step2-container-batch {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 40px;
+  z-index: 2;
+}
+
+.step2-card-batch {
+  width: 500px;
+  background: #d5d5d5;
+  border-radius: 6px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.28);
+  overflow: hidden;
+}
+
+.step2-header-batch {
+  background-color: #0a6ca6;
+  color: #fff;
+  font-weight: 700;
+  font-size: 20px;
+  padding: 14px 12px;
+}
+.secondary-btn-batch{
+  background: #f3f3f4;
+  color: rgb(12, 12, 12);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  position:relative;
+  left: 25px;
+}
+.secondary-btn-batch:hover {
+  background: #fbfcfd;
+}
+.step2-table-batch {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+  text-transform: capitalize;
+}
+
+.step2-table-batch th,
+.step2-table-batch td {
+  border-bottom:2px solid #090909;
+  padding: 8px 8px;
+  text-align: center;
+  font-size: 16px;
+  text-transform: uppercase;
+  color: #090909;
+  font-weight: bold;
+}
+
+.step2-btn-batch {
+  background-color: orange;
+  border: 2px solid #cc8500;
+  color: black;
+  font-weight: bold;
+  padding: 6px 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+.step2-btn-batch:hover {
+  background-color: #ffb84d;
+}
+.viewresultbatchbtn{
+  margin-left: 1.5rem;
+}
+.arrow-batch{
+  margin-left: 10px;
+}
+/* === Step 3 Results Container === */
+.step3-container-batch {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  background: #f9fafb;
+  min-height: 100vh;
+}
+
+.step3-card-batch {
+  width: 100%;
+  max-width: 1200px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  padding: 20px;
+  overflow-x: auto;
+}
+
+/* === Header with Back Button === */
+
+/* Header */
+.step3-header-batch {
+  background: linear-gradient(90deg, #0a6ca6, #044b72);
+  width: 100%;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  padding: 16px;
+  text-align: center;
+  position: relative;
+}
+.back-btn-batch {
+  background:white;
+  color: rgb(11, 11, 11);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  position:relative;
+  left:18rem;
+  
+}
+
+.back-btn-batch:hover {
+  background: #fbfcfd;
+}
+
+/* === Table Styling === */
+.result-table-batch {
+  overflow-x: auto;
+}
+
+.results-table-batch {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  text-align: center;
+}
+
+.results-table-batch th {
+  background: #f1f5f9;
+  color: #282829;
+  padding: 10px;
+  border: 1px solid #e5e7eb;
+  font-weight: 600;
+}
+
+.results-table-batch td {
+  padding: 10px;
+  border: 1px solid #e5e7eb;
+  color: #020202;
+}
+
+/* Alternate row shading */
+.results-table-batch tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+/* Highlight student code + marks */
+.code-cell-batch {
+  font-weight: 600;
+  color: #1e3a8a;
+}
+
+.marks-cell-batch {
+  font-weight: 700;
+  color: #dc2626;
+}
+
+/* Empty results */
+.ptag-batch {
+  text-align: center;
+  font-size: 16px;
+  color: #6b7280;
+  margin-top: 20px;
+}
+
+/* Responsive: scroll on smaller screens */
+@media (max-width: 768px) {
+  .step3-header-batch {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 16px;
+  }
+
+  .back-btn-batch {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+
+  .results-table-batch {
+    font-size: 12px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
