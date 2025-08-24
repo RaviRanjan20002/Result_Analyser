@@ -92,6 +92,7 @@ const resultSchema = new mongoose.Schema({
     },
   },
   totalMarks: Number, // sum of obtained marks
+  maxMarks: Number, // sum of total marks
 });
 const Result = mongoose.model("Result", resultSchema);  
 
@@ -154,6 +155,90 @@ app.post("/api/batches/add", async (req, res) => {
     res.status(500).json({ message: "Error adding batch", error: error.message });
   }
 });
+// app.post("/api/results", async (req, res) => {
+//   try {
+//     let { name, fatherName, testType, testDate, subjectMarks, batch } = req.body;
+
+//     // Normalize names
+//     const normalizedName = name.trim().toLowerCase();
+//     const normalizedFatherName = fatherName.trim().toLowerCase();
+//     const formattedName = toTitleCase(name.trim());
+//     const formattedFatherName = toTitleCase(fatherName.trim());
+//     const testDateFormatted = testDate;
+
+//     // Ensure obtainedMark is calculated
+//     Object.keys(subjectMarks).forEach(sub => {
+//       if (subjectMarks[sub]) {
+//         subjectMarks[sub].obtainedMark =
+//           (subjectMarks[sub].correctMark || 0) -
+//           (subjectMarks[sub].incorrectMark || 0);
+//       }
+//     });
+
+//     // Calculate totalMarks = sum of obtainedMark
+//     let totalMarks = 0;
+//     if (["dron", "madhav", "nakul"].includes(batch.toLowerCase())) {
+//       totalMarks =
+//         (subjectMarks.physics?.obtainedMark || 0) +
+//         (subjectMarks.chemistry?.obtainedMark || 0) +
+//         (subjectMarks.biology?.obtainedMark || 0);
+//     } else if (batch.toLowerCase() === "z") {
+//       totalMarks =
+//         (subjectMarks.physics?.obtainedMark || 0) +
+//         (subjectMarks.chemistry?.obtainedMark || 0) +
+//         (subjectMarks.mathematics?.obtainedMark || 0) +
+//         (subjectMarks.biology?.obtainedMark || 0);
+//     } else {
+//       totalMarks =
+//         (subjectMarks.physics?.obtainedMark || 0) +
+//         (subjectMarks.chemistry?.obtainedMark || 0) +
+//         (subjectMarks.mathematics?.obtainedMark || 0);
+//     }
+
+//     // Duplicate check
+//     const duplicate = await Result.findOne({
+//       name: { $regex: `^${normalizedName}$`, $options: 'i' },
+//       fatherName: { $regex: `^${normalizedFatherName}$`, $options: 'i' },
+//       testType,
+//       testDate: testDateFormatted,
+//     });
+
+//     if (duplicate) {
+//       return res.status(409).json({ message: "⚠️ Result already exists for this test." });
+//     }
+
+//     // Reuse or generate studentCode
+//     const existing = await Result.findOne({
+//       name: { $regex: `^${normalizedName}$`, $options: 'i' },
+//       fatherName: { $regex: `^${normalizedFatherName}$`, $options: 'i' },
+//     });
+//     let studentCode = existing?.studentCode || Math.floor(10000 + Math.random() * 90000).toString();
+
+//     // Save result
+//     const result = new Result({
+//       name: formattedName,
+//       fatherName: formattedFatherName,
+//       batch,
+//       testType,
+//       testDate: testDateFormatted,
+//       subjectMarks:
+//         ["dron", "madhav", "nakul"].includes(batch.toLowerCase())
+//           ? { physics: subjectMarks.physics, chemistry: subjectMarks.chemistry, biology: subjectMarks.biology }
+//           : batch.toLowerCase() === "z"
+//           ? { physics: subjectMarks.physics, chemistry: subjectMarks.chemistry, mathematics: subjectMarks.mathematics, biology: subjectMarks.biology }
+//           : { physics: subjectMarks.physics, chemistry: subjectMarks.chemistry, mathematics: subjectMarks.mathematics },
+//       totalMarks,
+//       studentCode,
+//     });
+
+//     await result.save();
+//     res.status(201).json({ message: "✅ Result saved successfully!", studentCode });
+
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
 app.post("/api/results", async (req, res) => {
   try {
     let { name, fatherName, testType, testDate, subjectMarks, batch } = req.body;
@@ -174,44 +259,66 @@ app.post("/api/results", async (req, res) => {
       }
     });
 
-    // Calculate totalMarks = sum of obtainedMark
+    // Calculate totalMarks & maxMarks
     let totalMarks = 0;
+    let maxMarks = 0;
+
     if (["dron", "madhav", "nakul"].includes(batch.toLowerCase())) {
       totalMarks =
         (subjectMarks.physics?.obtainedMark || 0) +
         (subjectMarks.chemistry?.obtainedMark || 0) +
         (subjectMarks.biology?.obtainedMark || 0);
+
+      maxMarks =
+        (subjectMarks.physics?.totalMark || 0) +
+        (subjectMarks.chemistry?.totalMark || 0) +
+        (subjectMarks.biology?.totalMark || 0);
     } else if (batch.toLowerCase() === "z") {
       totalMarks =
         (subjectMarks.physics?.obtainedMark || 0) +
         (subjectMarks.chemistry?.obtainedMark || 0) +
         (subjectMarks.mathematics?.obtainedMark || 0) +
         (subjectMarks.biology?.obtainedMark || 0);
+
+      maxMarks =
+        (subjectMarks.physics?.totalMark || 0) +
+        (subjectMarks.chemistry?.totalMark || 0) +
+        (subjectMarks.mathematics?.totalMark || 0) +
+        (subjectMarks.biology?.totalMark || 0);
     } else {
       totalMarks =
         (subjectMarks.physics?.obtainedMark || 0) +
         (subjectMarks.chemistry?.obtainedMark || 0) +
         (subjectMarks.mathematics?.obtainedMark || 0);
+
+      maxMarks =
+        (subjectMarks.physics?.totalMark || 0) +
+        (subjectMarks.chemistry?.totalMark || 0) +
+        (subjectMarks.mathematics?.totalMark || 0);
     }
 
     // Duplicate check
     const duplicate = await Result.findOne({
-      name: { $regex: `^${normalizedName}$`, $options: 'i' },
-      fatherName: { $regex: `^${normalizedFatherName}$`, $options: 'i' },
+      name: { $regex: `^${normalizedName}$`, $options: "i" },
+      fatherName: { $regex: `^${normalizedFatherName}$`, $options: "i" },
       testType,
       testDate: testDateFormatted,
     });
 
     if (duplicate) {
-      return res.status(409).json({ message: "⚠️ Result already exists for this test." });
+      return res
+        .status(409)
+        .json({ message: "⚠️ Result already exists for this test." });
     }
 
     // Reuse or generate studentCode
     const existing = await Result.findOne({
-      name: { $regex: `^${normalizedName}$`, $options: 'i' },
-      fatherName: { $regex: `^${normalizedFatherName}$`, $options: 'i' },
+      name: { $regex: `^${normalizedName}$`, $options: "i" },
+      fatherName: { $regex: `^${normalizedFatherName}$`, $options: "i" },
     });
-    let studentCode = existing?.studentCode || Math.floor(10000 + Math.random() * 90000).toString();
+    let studentCode =
+      existing?.studentCode ||
+      Math.floor(10000 + Math.random() * 90000).toString();
 
     // Save result
     const result = new Result({
@@ -222,22 +329,36 @@ app.post("/api/results", async (req, res) => {
       testDate: testDateFormatted,
       subjectMarks:
         ["dron", "madhav", "nakul"].includes(batch.toLowerCase())
-          ? { physics: subjectMarks.physics, chemistry: subjectMarks.chemistry, biology: subjectMarks.biology }
+          ? {
+              physics: subjectMarks.physics,
+              chemistry: subjectMarks.chemistry,
+              biology: subjectMarks.biology,
+            }
           : batch.toLowerCase() === "z"
-          ? { physics: subjectMarks.physics, chemistry: subjectMarks.chemistry, mathematics: subjectMarks.mathematics, biology: subjectMarks.biology }
-          : { physics: subjectMarks.physics, chemistry: subjectMarks.chemistry, mathematics: subjectMarks.mathematics },
+          ? {
+              physics: subjectMarks.physics,
+              chemistry: subjectMarks.chemistry,
+              mathematics: subjectMarks.mathematics,
+              biology: subjectMarks.biology,
+            }
+          : {
+              physics: subjectMarks.physics,
+              chemistry: subjectMarks.chemistry,
+              mathematics: subjectMarks.mathematics,
+            },
       totalMarks,
+      maxMarks, // ✅ now included
       studentCode,
     });
 
     await result.save();
-    res.status(201).json({ message: "✅ Result saved successfully!", studentCode });
-
+    res
+      .status(201)
+      .json({ message: "✅ Result saved successfully!", studentCode });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
-
 
 // // ✅ API to Add Student Test Details
 // app.post("/api/results", async (req, res) => {

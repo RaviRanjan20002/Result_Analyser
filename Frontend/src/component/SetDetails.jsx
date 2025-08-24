@@ -467,7 +467,7 @@ const SetDetails = () => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `http://result-analyserr.onrender.com/api/studentByCode/${code}`
+        `https://result-analyserr.onrender.com/api/studentByCode/${code}`
       );
       if (res.data) {
         setStudentInfo(res.data);
@@ -537,77 +537,90 @@ const SetDetails = () => {
   });
 };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!studentInfo) {
-      alert("⚠️ Student details not found for this code.");
-      return;
-    }
-    setSubmitting(true);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!studentInfo) {
+    alert("⚠️ Student details not found for this code.");
+    return;
+  }
+  setSubmitting(true);
 
-    let totalMarks = 0;
+  let totalMarks = 0;
+  let maxMarks = 0;
 
-    // Physics + Chemistry always
-    totalMarks += formData.subjectMarks.physics.obtainedMark;
-    totalMarks += formData.subjectMarks.chemistry.obtainedMark;
+  // Physics + Chemistry always
+  totalMarks += formData.subjectMarks.physics.obtainedMark;
+  totalMarks += formData.subjectMarks.chemistry.obtainedMark;
 
-    // NEET types → Biology
-    if (
-      formData.testType === "neet" ||
-      formData.testType === "neettough" ||
-      formData.testType === "neetmoderate"
-    ) {
-      totalMarks += formData.subjectMarks.biology.obtainedMark;
-    }
-    // "other" + Z batch → Math + Bio
-    else if (formData.testType === "other" || studentInfo?.batch === "Z") {
-      totalMarks += formData.subjectMarks.mathematics.obtainedMark;
-      totalMarks += formData.subjectMarks.biology.obtainedMark;
-    }
-    // Default → Math
-    else {
-      totalMarks += formData.subjectMarks.mathematics.obtainedMark;
-    }
+  maxMarks += formData.subjectMarks.physics.totalMark;
+  maxMarks += formData.subjectMarks.chemistry.totalMark;
 
-    const payload = {
-      studentCode: formData.studentCode,
-      testType: formData.testType,
-      testDate: formData.testDate,
-      name: studentInfo.name,
-      fatherName: studentInfo.fatherName,
-      batch: studentInfo.batch,
-      subjectMarks: formData.subjectMarks,
-      totalMarks, // sum of obtained marks
-    };
+  // NEET types → Biology
+  if (
+    formData.testType === "neet" ||
+    formData.testType === "neettough" ||
+    formData.testType === "neetparttest" ||
+    formData.testType === "neetmoderate"
+  ) {
+    totalMarks += formData.subjectMarks.biology.obtainedMark;
+    maxMarks += formData.subjectMarks.biology.totalMark;
+  }
+  // "other" + Z batch → Math + Bio
+  else if (formData.testType === "other" || studentInfo?.batch === "Z") {
+    totalMarks += formData.subjectMarks.mathematics.obtainedMark;
+    totalMarks += formData.subjectMarks.biology.obtainedMark;
 
-    try {
-      await axios.post(
-        "http://result-analyserr.onrender.com/api/results",
-        payload
-      );
-      alert("✅ Result Saved Successfully!");
-      setFormData({
-        testDate: "",
-        studentCode: "",
-        testType: "jeemains",
-        subjectMarks: {
-          physics: { totalMark: 0, correctMark: 0, incorrectMark: 0, obtainedMark: 0 },
-          chemistry: { totalMark: 0, correctMark: 0, incorrectMark: 0, obtainedMark: 0 },
-          biology: { totalMark: 0, correctMark: 0, incorrectMark: 0, obtainedMark: 0 },
-          mathematics: { totalMark: 0, correctMark: 0, incorrectMark: 0, obtainedMark: 0 },
-        },
-        totalMarks: 0,
-      });
-      setStudentInfo(null);
-    } catch (err) {
-      if (err.response?.status === 409) {
-        alert("⚠️ Result already exists for this student, test type, and date.");
-      } else {
-        alert("❌ Something went wrong while saving.");
-      }
-    }
-    setSubmitting(false);
+    maxMarks += formData.subjectMarks.mathematics.totalMark;
+    maxMarks += formData.subjectMarks.biology.totalMark;
+  }
+  // Default → Math
+  else {
+    totalMarks += formData.subjectMarks.mathematics.obtainedMark;
+    maxMarks += formData.subjectMarks.mathematics.totalMark;
+  }
+
+  const payload = {
+    studentCode: formData.studentCode,
+    testType: formData.testType,
+    testDate: formData.testDate,
+    name: studentInfo.name,
+    fatherName: studentInfo.fatherName,
+    batch: studentInfo.batch,
+    subjectMarks: formData.subjectMarks,
+    totalMarks, // sum of obtained marks
+    maxMarks,   // sum of total marks
   };
+
+  try {
+    await axios.post(
+      "https://result-analyserr.onrender.com/api/results",
+      payload
+    );
+    alert("✅ Result Saved Successfully!");
+    setFormData({
+      testDate: "",
+      studentCode: "",
+      testType: "jeemains",
+      subjectMarks: {
+        physics: { totalMark: 0, correctMark: 0, incorrectMark: 0, obtainedMark: 0 },
+        chemistry: { totalMark: 0, correctMark: 0, incorrectMark: 0, obtainedMark: 0 },
+        biology: { totalMark: 0, correctMark: 0, incorrectMark: 0, obtainedMark: 0 },
+        mathematics: { totalMark: 0, correctMark: 0, incorrectMark: 0, obtainedMark: 0 },
+      },
+      totalMarks: 0,
+      maxMarks: 0,
+    });
+    setStudentInfo(null);
+  } catch (err) {
+    if (err.response?.status === 409) {
+      alert("⚠️ Result already exists for this student, test type, and date.");
+    } else {
+      alert("❌ Something went wrong while saving.");
+    }
+  }
+  setSubmitting(false);
+};
+
 
   if (!isAuthorized) {
     return (

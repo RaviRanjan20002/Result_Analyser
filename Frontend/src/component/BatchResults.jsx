@@ -763,7 +763,7 @@ const BatchResults = () => {
     setError("");
     try {
       const res = await axios.get(
-        `http://result-analyserr.onrender.com/api/testdates?batch=${batch}&testType=${testType}`
+        `https://result-analyserr.onrender.com/api/testdates?batch=${batch}&testType=${testType}`
       );
 
       if (!res.data || res.data.length === 0) {

@@ -30,7 +30,7 @@ const RegisterStudent = () => {
   const fetchBatches = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://result-analyserr.onrender.com/api/batches");
+      const response = await axios.get("https://result-analyserr.onrender.com/api/batches");
       const batchNames = response.data.map((b) =>
         typeof b === "string" ? b : b.batch || b.name || ""
       );
@@ -66,7 +66,7 @@ const RegisterStudent = () => {
 
     try {
       const res = await axios.post(
-        "http://result-analyserr.onrender.com/api/generate-code",
+        "https://result-analyserr.onrender.com/api/generate-code",
         formData
       );
       setStudentCode(res.data.studentCode);
@@ -108,6 +108,7 @@ const RegisterStudent = () => {
     );
   }
   return (
+  <div className="register-maincontainer">
     <div className="register-container">
       <h2>🎓 Register Student</h2>
 
@@ -134,6 +135,7 @@ const RegisterStudent = () => {
           name="batch"
           value={formData.batch}
           onChange={handleChange}
+          style={{ width: "100%" }}
           required
         >
           <option value="">-- Select Batch --</option>
@@ -150,12 +152,12 @@ const RegisterStudent = () => {
           onChange={handleChange}
           required
         />
-        <button className="reg-btn" type="submit" disabled={loading}>
+        <button className="reg-btn" type="submit" style={{marginLeft:"14px"}} disabled={loading}>
           {loading ? <span className="spinner"></span> : "Generate Student Code"}
         </button>
       </form>
 
-      <button className="view-btn" onClick={() => navigate("/view-registered")}>
+      <button className="view-btn" style={{marginLeft:"14px"}} onClick={() => navigate("/view-registered")}>
         📋 View Registered Students
       </button>
 
@@ -181,6 +183,7 @@ const RegisterStudent = () => {
         </div>
       )}
     </div>
+  </div>
   );
 };
 

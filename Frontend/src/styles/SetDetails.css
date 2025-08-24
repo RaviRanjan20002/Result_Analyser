@@ -7,13 +7,31 @@ body {
     margin: 0;
     padding: 0;
   } 
+
 .setdetails-bg {
-  min-height: 100vh;
-  /* background: linear-gradient(130deg, #c4e0e5 0%, #4ca1af 100%); */
-  background-color: #405555;
+  background: url("../assets/WebsiteBgd.jpg") center/cover no-repeat;
+  width: 100%;
+  min-height: 100vh;          
   display: flex;
-  align-items: center;
-  justify-content: center;
+  justify-content: center; 
+  align-items: center;      
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+.setdetails-bg::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.65); /* black overlay (adjust opacity) */
+  z-index: 0; /* keeps it behind content */
+}
+.setdetails-bg > * {
+  position: relative;
+  z-index: 1; /* keep text/buttons visible */
 }
 .setdetails-card {
   background-color:#efecec;

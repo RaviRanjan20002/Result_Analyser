@@ -399,6 +399,32 @@ input[type="date"] {
   }
 } */
 
+
+.viewresult-bg-batch {
+  background: url("../assets/WebsiteBgd.jpg") center/cover no-repeat;
+  width: 100%;
+  min-height: 100vh;          
+  display: flex; 
+  align-items: center;      
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+.viewresult-bg-batch::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.65); /* black overlay (adjust opacity) */
+  z-index: 0; /* keeps it behind content */
+}
+.viewresult-bg-batch > * {
+  position: relative;
+  z-index: 1; /* keep text/buttons visible */
+}
+
 .viewresult-container-batch {
   display: flex;
   flex-direction: column;
