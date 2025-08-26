@@ -19,7 +19,7 @@ const ViewStudentCodes = () => {
   const fetchBatches = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://result-analyserr.onrender.com/api/batches");
+      const response = await axios.get("https://result-analyserr.onrender.com/api/batches");
       const batchNames = response.data.map((b) =>
         typeof b === "string" ? b : b.batch || b.name || ""
       );
@@ -38,7 +38,7 @@ const ViewStudentCodes = () => {
   setLoading(true);
   try {
     const res = await axios.get(
-      `http://result-analyserr.onrender.com/api/studentsByBatch/${selectedBatch}`
+      `https://result-analyserr.onrender.com/api/studentsByBatch/${selectedBatch}`
     );
     setStudents(res.data || []);
     setDisplayedBatch(selectedBatch);  // ✅ Set the batch used for display

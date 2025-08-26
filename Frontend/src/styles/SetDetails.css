@@ -101,8 +101,15 @@ body {
 .selectcl {
   appearance: none;
   background: #fafdff url("data:image/svg+xml,%3Csvg viewBox='0 0 12 7' width='12' height='7' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 7L12 0H0z' fill='%234ca1af'/%3E%3C/svg%3E") no-repeat right 0.7em center/14px 10px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  font-size: 16px;
+  border-radius: 6px;
+  background-color: #fff;
+  white-space: normal; /* allow wrapping */
+  word-wrap: break-word;
 }
-
 .subject-section {
   display: flex;
   flex-wrap: wrap;
@@ -110,9 +117,6 @@ body {
   margin: 14px 0 10px 0;
   justify-content: space-between;
 }
-
-
-
 
 /* Student info card */
 .student-info-card {
@@ -288,34 +292,113 @@ input::placeholder {
   to { opacity: 1; transform: none;}
 }
 
-/* Responsive */
-@media (max-width: 750px) {
-  .setdetails-card {
-    padding: 18px 7vw 18px 7vw;
-    max-width: 98vw;
-    min-width: unset;
-  }
+
+
+
+/* ✅ Responsive & Sticky Table Column */
+
+/* Tablets and small laptops */
+@media (max-width: 1024px) {
   .flex-row {
-    flex-direction: column;
-    gap: 13px;
+    flex-wrap: wrap;
+    gap: 14px;
   }
-  .subject-section {
-    flex-direction: column;
-    gap: 13px;
+
+  .form-group {
+    flex: 1 1 45%;
+    min-width: 160px;
+  }
+
+  .marks-input {
+    min-width: 85px;
+  }
+
+  .Resultbutton {
+    width: 60%;
   }
 }
 
-/* .marks-input[readonly] {
-  background-color: #e6ffe6; 
-  font-weight: bold;
-  border: 1px solid #b2ffb2;
-  color: #006600;
-  cursor: not-allowed;
-} */
-/* .total-marks-display {
-  margin-top: 15px;
-  padding: 10px;
-  background: #f0f8ff;
-  border-radius: 5px;
-  font-size: 16px;
-} */
+/* Phones */
+@media (max-width: 768px) {
+  .setdetails-card{
+    width:90%;
+  }
+  .flex-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .form-group {
+    width: 100%;
+  }
+  
+  /* Table scrollable */
+  .subject-section {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .marks-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    font-size: 14px;
+  }
+
+  .marks-table th,
+  .marks-table td {
+    padding: 6px;
+    font-size: 13px;
+  }
+
+  .marks-input {
+    min-width: 80px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Result button full width */
+  .Resultbutton {
+    width: 50%;
+    justify-content: center;
+    font-size: 15px;
+  }
+
+  .btn-text {
+    margin-left: 0;
+  }
+
+  .btn-icon {
+    margin-left: 10px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .setresult-header {
+    font-size: 16px;
+    padding: 10px;
+  }
+
+  .student-info-card {
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .marks-table {
+    font-size: 12px;
+  }
+
+  .marks-input {
+    font-size: 12px;
+    padding: 4px;
+  }
+
+  .Resultbutton {
+    font-size: 14px;
+    padding: 7px 12px;
+  }
+}

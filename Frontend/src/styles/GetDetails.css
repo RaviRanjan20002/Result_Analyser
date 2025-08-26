@@ -389,6 +389,157 @@ margin-top: 1px;
 }
 
 
+/* === Responsive Adjustments === */
+
+/* Small devices (phones) */
+@media (max-width: 768px) {
+  /* Background stays full height */
+  .viewresult-bg {
+    padding: 10px;
+    min-height: 100vh;
+  }
+  .step1-container{
+    width: 120%;
+  }
+  /* Step 1 & Step 2 cards */
+  .viewresult-card,
+  .step2-card {
+    width: 100%;
+    margin: 1rem auto;
+  }
+
+  .viewresult-form {
+    padding: 16px;
+    font-size: 14px;
+    gap: 12px;
+  }
+
+  .viewresult-form input {
+    width: 100%;
+    max-width: 100%;
+    font-size: 16px;
+  }
+
+  .viewresult-form button {
+    width: 100%;
+    justify-content: center;
+    font-size: 15px;
+  }
+
+  .button-text {
+    margin-left: 0;
+  }
+
+  /* Teacher Image */
+  .teachers-img-container {
+    width: 120%;
+    
+    top: 0;
+    margin-top: 1rem;
+  }
+
+  .teachers-img {
+    width: 110%;
+    position: relative;
+    top: 14rem;
+  }
+
+  /* Step 2 table */
+  .step2-container{
+    width: 115%;
+  }
+ 
+  .step2-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    font-size: 14px;
+    
+  }
+  .step2-table th,
+  .step2-table td {
+    font-size: 13px;
+    padding: 6px;
+  }
+
+  /* Step 3 layout: stack trophy below card */
+  .step3-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .step3-card {
+    width: 100%;
+    overflow-x: auto; /* allow horizontal scroll for wide tables */
+  }
+
+  .step3-info {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .rank-box {
+    grid-column: span 2;
+  }
+
+  /* Step 3 table scrollable */
+  .step3-table {
+    display: block;
+    width: 95%;
+    margin: 0 auto ;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .step3-table th,
+  .step3-table td {
+    font-size: 13px;
+    padding: 8px;
+  }
+ .trophy-wrapper{
+    width: 180%;
+    position: relative;
+    top:4rem;
+    left: -8rem;
+ }
+  /* Trophy resize */
+  .trophy-image {
+    width: 100%;
+  }
+
+  .trophy-names {
+    width: 50%;
+    bottom: 4rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 25px;
+  }
+
+  .name {
+    font-size: 12px;
+    width: fit-content;
+  }
+}
+
+/* Medium devices (tablets) */
+@media (max-width: 992px) {
+  .viewresult-card,
+  .step2-card,
+  .step3-card {
+    width: 90%;
+  }
+
+  .step3-container {
+    flex-direction: column;
+  }
+
+  .trophy-image {
+    width: 60%;
+    max-width: 350px;
+  }
+}
+
 
 
 

@@ -740,9 +740,7 @@ const BatchResults = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const passwordInputRef = useRef(null);
   useEffect(() => {
-    fetchBatches();
-  }, []);
-
+    
   const fetchBatches = async () => {
     try {
       const res = await axios.get(
@@ -753,6 +751,9 @@ const BatchResults = () => {
       console.error("Error fetching batches", err);
     }
   };
+    fetchBatches();
+  }, []);
+
 
   // 🔹 Step 1 → fetch test dates for batch & testType
   const handleBatchTypeSubmit = async (e) => {
@@ -909,7 +910,7 @@ const BatchResults = () => {
                   <option value="other">Other</option>
                 </select>
 
-                <button type="submit">
+                <button  className= "resbtn" type="submit">
                   <span className="viewresultbatchbtn">{loading ? "Loading..." : "View Result"}</span>
                   {/* <FaGreaterThan className="arrow-batch" /> */}
                    <FaArrowRight className="arrow-batch"/>
@@ -1170,5 +1171,4 @@ const BatchResults = () => {
 };
 
 export default BatchResults;
-
 
