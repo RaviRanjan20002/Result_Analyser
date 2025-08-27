@@ -437,10 +437,11 @@ const SetDetails = () => {
     studentCode: "",
     testType: "jeemains",
     subjectMarks: {
-      physics: { totalMark: 0, correctMark: 0, incorrectMark: 0, obtainedMark: 0 },
-      chemistry: { totalMark: 0, correctMark: 0, incorrectMark: 0, obtainedMark: 0 },
-      biology: { totalMark: 0, correctMark: 0, incorrectMark: 0, obtainedMark: 0 },
-      mathematics: { totalMark: 0, correctMark: 0, incorrectMark: 0, obtainedMark: 0 },
+physics: { totalMark: null, correctMark: null, incorrectMark: null, obtainedMark: null },
+chemistry: { totalMark: null, correctMark: null, incorrectMark: null, obtainedMark: null },
+biology: { totalMark: null, correctMark: null, incorrectMark: null, obtainedMark: null },
+mathematics: { totalMark: null, correctMark: null, incorrectMark: null, obtainedMark: null },
+
     },
     totalMarks: 0,
   });
@@ -489,11 +490,60 @@ const SetDetails = () => {
   }, [formData.studentCode, formData.testDate, formData.testType]);
 
   // Auto-calc obtained marks when positive/negative change
- const handleSubjectChange = (subject, field, value) => {
+//  const handleSubjectChange = (subject, field, value) => {
+//   setFormData((prevData) => {
+//     const updatedSubject = {
+//       ...prevData.subjectMarks[subject],
+//       [field]: Number(value) || 0
+//     };
+
+//     // Auto-calc obtained mark
+//     if (field === "correctMark" || field === "incorrectMark") {
+//       updatedSubject.obtainedMark =
+//         (updatedSubject.correctMark || 0) -
+//         (updatedSubject.incorrectMark || 0);
+//     }
+
+//     // Prepare updated subjectMarks
+//     const updatedSubjectMarks = {
+//       ...prevData.subjectMarks,
+//       [subject]: updatedSubject
+//     };
+
+//     // Auto-calc totalMarks from obtained marks
+//     let totalMarks = 0;
+//     if (["neet", "neettough", "neetmoderate"].includes(prevData.testType)) {
+//       totalMarks =
+//         (updatedSubjectMarks.physics?.obtainedMark || 0) +
+//         (updatedSubjectMarks.chemistry?.obtainedMark || 0) +
+//         (updatedSubjectMarks.biology?.obtainedMark || 0);
+//     } else if (prevData.testType === "other" || studentInfo?.batch === "Z") {
+//       totalMarks =
+//         (updatedSubjectMarks.physics?.obtainedMark || 0) +
+//         (updatedSubjectMarks.chemistry?.obtainedMark || 0) +
+//         (updatedSubjectMarks.mathematics?.obtainedMark || 0) +
+//         (updatedSubjectMarks.biology?.obtainedMark || 0);
+//     } else {
+//       totalMarks =
+//         (updatedSubjectMarks.physics?.obtainedMark || 0) +
+//         (updatedSubjectMarks.chemistry?.obtainedMark || 0) +
+//         (updatedSubjectMarks.mathematics?.obtainedMark || 0);
+//     }
+
+//     return {
+//       ...prevData,
+//       subjectMarks: updatedSubjectMarks,
+//       totalMarks
+//     };
+//   });
+// };
+const handleSubjectChange = (subject, field, value) => {
   setFormData((prevData) => {
+    const parsedValue = value === "" ? null : Number(value);
+
     const updatedSubject = {
       ...prevData.subjectMarks[subject],
-      [field]: Number(value) || 0
+      [field]: parsedValue,
     };
 
     // Auto-calc obtained mark
@@ -506,7 +556,7 @@ const SetDetails = () => {
     // Prepare updated subjectMarks
     const updatedSubjectMarks = {
       ...prevData.subjectMarks,
-      [subject]: updatedSubject
+      [subject]: updatedSubject,
     };
 
     // Auto-calc totalMarks from obtained marks
@@ -532,7 +582,7 @@ const SetDetails = () => {
     return {
       ...prevData,
       subjectMarks: updatedSubjectMarks,
-      totalMarks
+      totalMarks,
     };
   });
 };
@@ -602,10 +652,13 @@ const handleSubmit = async (e) => {
       studentCode: "",
       testType: "jeemains",
       subjectMarks: {
-        physics: { totalMark: 0, correctMark: 0, incorrectMark: 0, obtainedMark: 0 },
-        chemistry: { totalMark: 0, correctMark: 0, incorrectMark: 0, obtainedMark: 0 },
-        biology: { totalMark: 0, correctMark: 0, incorrectMark: 0, obtainedMark: 0 },
-        mathematics: { totalMark: 0, correctMark: 0, incorrectMark: 0, obtainedMark: 0 },
+
+
+        physics: { totalMark: null, correctMark: null, incorrectMark: null, obtainedMark: null },
+chemistry: { totalMark: null, correctMark: null, incorrectMark: null, obtainedMark: null },
+biology: { totalMark: null, correctMark: null, incorrectMark: null, obtainedMark: null },
+mathematics: { totalMark: null, correctMark: null, incorrectMark: null, obtainedMark: null },
+
       },
       totalMarks: 0,
       maxMarks: 0,
@@ -736,8 +789,134 @@ const handleSubmit = async (e) => {
               </div>
             </div>
           )}
+<div className="subject-section">
+  <table className="marks-table">
+    <thead>
+      <tr>
+        <th>Subject</th>
+        {columns.map((col) => (
+          <th key={col.key}>{col.label}</th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {["physics", "chemistry"].map((subject) => (
+        <tr key={subject}>
+          <td className="subject-name">{subject.toUpperCase()}</td>
+          {columns.map((col) => (
+            <td key={col.key}>
+              <input
+                type="number"
+                placeholder={col.label}
+                value={
+                  formData.subjectMarks[subject][col.key] === null ||
+                  formData.subjectMarks[subject][col.key] === undefined
+                    ? ""
+                    : formData.subjectMarks[subject][col.key]
+                }
+                onChange={(e) =>
+                  col.key !== "obtainedMark" &&
+                  handleSubjectChange(subject, col.key, e.target.value)
+                }
+                className="marks-input"
+                min={0}
+                required={col.key !== "obtainedMark"}
+                readOnly={col.key === "obtainedMark"}
+              />
+            </td>
+          ))}
+        </tr>
+      ))}
 
-          <div className="subject-section">
+      {formData.testType === "neet" ||
+      formData.testType === "neetparttest" ||
+      formData.testType === "neettough" ||
+      formData.testType === "neetmoderate" ? (
+        <tr>
+          <td className="subject-name">BIOLOGY</td>
+          {columns.map((col) => (
+            <td key={col.key}>
+              <input
+                type="number"
+                placeholder={col.label}
+                value={
+                  formData.subjectMarks.biology[col.key] === null ||
+                  formData.subjectMarks.biology[col.key] === undefined
+                    ? ""
+                    : formData.subjectMarks.biology[col.key]
+                }
+                onChange={(e) =>
+                  col.key !== "obtainedMark" &&
+                  handleSubjectChange("biology", col.key, e.target.value)
+                }
+                className="marks-input"
+                min={0}
+                required={col.key !== "obtainedMark"}
+                readOnly={col.key === "obtainedMark"}
+              />
+            </td>
+          ))}
+        </tr>
+      ) : formData.testType === "other" || studentInfo?.batch === "Z" ? (
+        ["mathematics", "biology"].map((subject) => (
+          <tr key={subject}>
+            <td className="subject-name">{subject.toUpperCase()}</td>
+            {columns.map((col) => (
+              <td key={col.key}>
+                <input
+                  type="number"
+                  placeholder={col.label}
+                  value={
+                    formData.subjectMarks[subject][col.key] === null ||
+                    formData.subjectMarks[subject][col.key] === undefined
+                      ? ""
+                      : formData.subjectMarks[subject][col.key]
+                  }
+                  onChange={(e) =>
+                    col.key !== "obtainedMark" &&
+                    handleSubjectChange(subject, col.key, e.target.value)
+                  }
+                  className="marks-input"
+                  min={0}
+                  required={col.key !== "obtainedMark"}
+                  readOnly={col.key === "obtainedMark"}
+                />
+              </td>
+            ))}
+          </tr>
+        ))
+      ) : (
+        <tr>
+          <td className="subject-name">MATHEMATICS</td>
+          {columns.map((col) => (
+            <td key={col.key}>
+              <input
+                type="number"
+                placeholder={col.label}
+                value={
+                  formData.subjectMarks.mathematics[col.key] === null ||
+                  formData.subjectMarks.mathematics[col.key] === undefined
+                    ? ""
+                    : formData.subjectMarks.mathematics[col.key]
+                }
+                onChange={(e) =>
+                  col.key !== "obtainedMark" &&
+                  handleSubjectChange("mathematics", col.key, e.target.value)
+                }
+                className="marks-input"
+                min={0}
+                required={col.key !== "obtainedMark"}
+                readOnly={col.key === "obtainedMark"}
+              />
+            </td>
+          ))}
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>
+
+          {/* <div className="subject-section">
             <table className="marks-table">
               <thead>
                 <tr>
@@ -756,7 +935,7 @@ const handleSubmit = async (e) => {
                         <input
                           type="number"
                           placeholder={col.label}
-                          value={formData.subjectMarks[subject][col.key] || ""}
+                          value={formData.subjectMarks[subject][col.key] ?? ""}
                           onChange={(e) =>
                             col.key !== "obtainedMark" &&
                             handleSubjectChange(subject, col.key, e.target.value)
@@ -782,7 +961,8 @@ const handleSubmit = async (e) => {
                         <input
                           type="number"
                           placeholder={col.label}
-                          value={formData.subjectMarks.biology[col.key] || ""}
+                          value={formData.subjectMarks.biology[col.key]  ?? ""}
+
                           onChange={(e) =>
                             col.key !== "obtainedMark" &&
                             handleSubjectChange("biology", col.key, e.target.value)
@@ -804,7 +984,7 @@ const handleSubmit = async (e) => {
                           <input
                             type="number"
                             placeholder={col.label}
-                            value={formData.subjectMarks[subject][col.key] || ""}
+                            value={formData.subjectMarks[subject][col.key] ?? ""}
                             onChange={(e) =>
                               col.key !== "obtainedMark" &&
                               handleSubjectChange(subject, col.key, e.target.value)
@@ -826,7 +1006,7 @@ const handleSubmit = async (e) => {
                         <input
                           type="number"
                           placeholder={col.label}
-                          value={formData.subjectMarks.mathematics[col.key] || ""}
+                          value={formData.subjectMarks.mathematics[col.key] ?? ""}
                           onChange={(e) =>
                             col.key !== "obtainedMark" &&
                             handleSubjectChange("mathematics", col.key, e.target.value)
@@ -842,7 +1022,7 @@ const handleSubmit = async (e) => {
                 )}
               </tbody>
             </table>
-          </div>
+          </div> */}
                      {/* <div className="total-marks-display">
   <strong>Total Marks (Overall):</strong> {formData.totalMarks}
 </div> */}
