@@ -268,7 +268,17 @@ const GetDetails = () => {
         {step === 2 && (
   <div className="step2-container">
     <div className="step2-card">
-      <div className="step2-header">Select Test To View Result</div>
+      <div className="step2-header">Select Test To View Result
+            <button
+          className="back-btn"
+          onClick={() => {
+            setStep(1);       // go back to step 2
+            setSelectedTest(null); // clear current test
+          }}
+        >
+          ⬅ Back
+        </button>
+      </div>
 
       <table className="step2-table">  
         <thead>

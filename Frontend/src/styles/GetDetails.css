@@ -465,8 +465,7 @@ margin-top: 1px;
 
   /* Step 3 layout: stack trophy below card */
   .step3-container {
-    flex-direction: column;
-    gap: 20px;
+    width:120%;
   }
 
   .step3-card {
@@ -486,7 +485,7 @@ margin-top: 1px;
   /* Step 3 table scrollable */
   .step3-table {
     display: block;
-    width: 95%;
+    width: 100%;
     margin: 0 auto ;
     overflow-x: auto;
     white-space: nowrap;

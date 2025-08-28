@@ -31,6 +31,7 @@ const Navbar = () => {
         <Link to="/resultdashboard" onClick={toggleMenu}>Batch Analysis</Link>
         <Link to="/quizanalysis" onClick={toggleMenu}>Quiz Analysis</Link>
         <Link to="/comparision" onClick={toggleMenu}>Analysed With Topper</Link>
+        <Link to="/updateResult" onClick={toggleMenu}>Update</Link>
       </div>
     </nav>
   );

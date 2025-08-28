@@ -12,6 +12,7 @@ import StudentCodesByDate from './component/StudentCodesByDate';
 import BatchManagement from './component/BatchManagement';
 import RegisterStudent from './component/RegisterStudent';
 import ViewStudentCodes from './component/ViewStudentCodes';
+import UpdateResult from './component/UpdateResult';
 const App = () => {
     return (
         <Router>
@@ -28,6 +29,7 @@ const App = () => {
                     <Route path="graphicalanalysis" element={<OverallAnalysis/>} />
                     <Route path="batch-management" element={<BatchManagement />} /> 
                     <Route path="/view-registered" element={<ViewStudentCodes/>} />
+                    <Route path="updateResult" element={<UpdateResult/>} />
                 </Route>
             </Routes>
         </Router>

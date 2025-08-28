@@ -100,7 +100,23 @@ const Result = mongoose.model("Result", resultSchema);
 app.get("/", (req, res) => {
   res.send("Server is running!");
 });
+// GET results by batch and testDate
+app.get("/api/results", async (req, res) => {
+  try {
+    const { batch, testDate } = req.query;
 
+    // Adjust date formatting if needed
+    const results = await Result.find({ batch, testDate });
+
+    if (!results || results.length === 0) {
+      return res.status(404).json({ message: "No results found" });
+    }
+
+    res.json(results);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 // Get all batches
 app.get("/api/batches", async (req, res) => {
   try {
@@ -155,6 +171,47 @@ app.post("/api/batches/add", async (req, res) => {
     res.status(500).json({ message: "Error adding batch", error: error.message });
   }
 });
+app.put("/api/results/:studentCode", async (req, res) => {
+  try {
+    const { studentCode } = req.params;
+    const { testDate, batch, subjectMarks, totalMarks, maxMarks } = req.body;
+
+    if (!testDate || !batch) {
+      return res.status(400).json({ message: "testDate and batch are required" });
+    }
+
+    // Find existing result
+    const existing = await Result.findOne({ studentCode, testDate, batch });
+
+    if (!existing) {
+      return res
+        .status(404)
+        .json({ message: "Result not found for this student on given date & batch" });
+    }
+
+    // Deep merge subject marks
+    if (subjectMarks) {
+      for (const subject of Object.keys(subjectMarks)) {
+        existing.subjectMarks[subject] = {
+          ...existing.subjectMarks[subject],
+          ...subjectMarks[subject],
+        };
+      }
+    }
+
+    if (totalMarks !== undefined) existing.totalMarks = totalMarks;
+    if (maxMarks !== undefined) existing.maxMarks = maxMarks;
+
+    await existing.save();
+    return res.json({ message: "Result updated successfully", result: existing });
+  } catch (error) {
+    console.error("Error updating result:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
+
 // app.post("/api/results", async (req, res) => {
 //   try {
 //     let { name, fatherName, testType, testDate, subjectMarks, batch } = req.body;
@@ -965,6 +1022,9 @@ app.get("/api/results/:name", async (req, res) => {
 //   }
 // });
 
+
+
+
 app.get("/api/results/batch/:batch", async (req, res) => {
   try {
     const { batch } = req.params;
@@ -1225,7 +1285,33 @@ app.get("/api/compare-with-topper", async (req, res) => {
   }
 });
 
+// app.put("/api/results/update", async (req, res) => {
+//   try {
+//     const { results } = req.body;
+//     for (let r of results) {
+//       await Result.updateOne(
+//         { studentCode: r.studentCode, testDate: r.testDate },
+//         { $set: { totalMarks: r.totalMarks } }
+//       );
+//     }
+//     res.json({ success: true });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ success: false, error: "Update failed" });
+//   }
+// });
 
+// Update result by ID
+// app.put("/api/results/:id", async (req, res) => {
+//   try {
+//     const updated = await Result.findByIdAndUpdate(req.params.id, req.body, {
+//       new: true,
+//     });
+//     res.json(updated);
+//   } catch (err) {
+//     res.status(500).json({ error: "Failed to update result" });
+//   }
+// });
 
 
 app.get("/api/student-performance", async (req, res) => {
